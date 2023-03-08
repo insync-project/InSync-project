@@ -1,0 +1,5 @@
+yarn run typeorm migration:generate ./src/migrations/InitialMigration -- -d ./src/data-source.ts
+
+UP: yarn run typeorm migration:run -- -d ./src/data-source
+
+DOWN: yarn run typeorm migration:revert -- -d ./src/data-source
