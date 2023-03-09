@@ -1,6 +1,9 @@
 import { Request, Response, Router } from "express";
 import { validateBodyMiddleware } from "../middlewares/global/validateBody.middlewares";
-import { projectsCreateSchema } from "../schemas/projects.schemas";
+import {
+  projectsCreateReturnSchema,
+  projectsCreateSchema,
+} from "../schemas/projects.schemas";
 import { tokenValidationMiddleware } from "../middlewares/global/validateToken.middleware";
 import { createProjectsControllers } from "../controllers/projects.controllers";
 import { Project } from "../entities";
@@ -33,6 +36,8 @@ projectsRoutes.get(
       },
     });
 
-    return res.status(200).json(realEstateResult);
+    const parse = projectsCreateReturnSchema.parse(realEstateResult);
+
+    return res.status(200).json(parse);
   }
 );
