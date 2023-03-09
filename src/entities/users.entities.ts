@@ -14,6 +14,7 @@ import {
 } from "typeorm";
 import { SocialMedia } from "./socialMedia.entities";
 import { Project } from "./projects.entities";
+import { UserTechnology } from "./usersTechnologies.entities";
 
 @Entity("users")
 export class User {
@@ -49,6 +50,12 @@ export class User {
 
   @DeleteDateColumn({ type: "date" })
   deletedAt: string;
+
+  @OneToMany(
+    () => UserTechnology,
+    (userTechnology) => userTechnology.technology
+  )
+  userTechnologies: UserTechnology[];
 
   @OneToOne(() => SocialMedia)
   @JoinColumn()

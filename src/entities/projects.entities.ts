@@ -10,6 +10,7 @@ import {
 } from "typeorm";
 import { User } from "./users.entities";
 import { UserProjectTeam } from "./usersProjectsTeam.entities";
+import { ProjectTechnology } from "./projectsTechnologies.entities";
 
 export enum devTypeProjectRole {
   FRONT = "Front-end",
@@ -55,6 +56,12 @@ export class Project {
 
   @DeleteDateColumn({ type: "date" })
   deletedAt: string;
+
+  @OneToMany(
+    () => ProjectTechnology,
+    (projectTechnology) => projectTechnology.technology
+  )
+  projectTechnologies: ProjectTechnology[];
 
   @ManyToOne(() => User)
   owner: User;

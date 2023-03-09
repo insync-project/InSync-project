@@ -4,6 +4,7 @@ import {
   statusProjectRole,
 } from "../entities/projects.entities";
 import { returnCreateUser } from "./users.schemas";
+import { allReturnTechnologiesSchema } from "./technologies.schemas";
 
 export const projectsSchemas = z.object({
   id: z.number().positive().int(),
