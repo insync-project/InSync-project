@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class InitialMigration1678317500800 implements MigrationInterface {
-    name = 'InitialMigration1678317500800'
+export class createTable1678365658991 implements MigrationInterface {
+    name = 'createTable1678365658991'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`CREATE TABLE "social_media" ("id" SERIAL NOT NULL, "linkedln" character varying(50), "github" character varying(50), "youtube" character varying(120), "instagram" character varying(50), "discord" character varying(50), "createdAt" date NOT NULL DEFAULT now(), "updatedAt" date NOT NULL DEFAULT now(), "deletedAt" date, CONSTRAINT "PK_54ac0fd97432069e7c9ab567f8b" PRIMARY KEY ("id"))`);
@@ -9,7 +9,7 @@ export class InitialMigration1678317500800 implements MigrationInterface {
         await queryRunner.query(`CREATE TABLE "users_projects_team" ("id" SERIAL NOT NULL, "maxUsers" integer NOT NULL, "waiting" boolean NOT NULL DEFAULT true, "addedAt" date NOT NULL DEFAULT now(), "projectId" integer, "userId" integer, CONSTRAINT "PK_c09841cb9e52e644a928f21073f" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TYPE "public"."projects_status_enum" AS ENUM('Aberto', 'Em andamento', 'Finalizado')`);
         await queryRunner.query(`CREATE TYPE "public"."projects_devtype_enum" AS ENUM('Front-end', 'Back-end', 'Full-stack')`);
-        await queryRunner.query(`CREATE TABLE "projects" ("id" SERIAL NOT NULL, "name" character varying(50) NOT NULL, "description" text NOT NULL, "status" "public"."projects_status_enum" NOT NULL DEFAULT 'Aberto', "devType" "public"."projects_devtype_enum" NOT NULL, "cover" character varying(150) NOT NULL, "createdAt" date NOT NULL DEFAULT now(), "updatedAt" date NOT NULL DEFAULT now(), "deletedAt" date, "ownerId" integer, CONSTRAINT "PK_6271df0a7aed1d6c0691ce6ac50" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "projects" ("id" SERIAL NOT NULL, "name" character varying(50) NOT NULL, "description" text NOT NULL, "status" "public"."projects_status_enum" NOT NULL DEFAULT 'Aberto', "devType" "public"."projects_devtype_enum" NOT NULL, "cover" character varying(150), "createdAt" date NOT NULL DEFAULT now(), "updatedAt" date NOT NULL DEFAULT now(), "deletedAt" date, "ownerId" integer, CONSTRAINT "PK_6271df0a7aed1d6c0691ce6ac50" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "technologies" ("id" SERIAL NOT NULL, "name" character varying(30) NOT NULL, CONSTRAINT "PK_9a97465b79568f00becacdd4e4a" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "projects_technologies" ("id" SERIAL NOT NULL, "createdAt" date NOT NULL, "userId" integer, "technologyId" integer, CONSTRAINT "PK_0216cd62ab5f3228a8efc1f31cf" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "users_technologies" ("id" SERIAL NOT NULL, "createdAt" date NOT NULL, "userId" integer, "technologyId" integer, CONSTRAINT "PK_958d4d90a76dec48d6088a3394b" PRIMARY KEY ("id"))`);
