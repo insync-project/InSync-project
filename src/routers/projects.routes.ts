@@ -9,29 +9,39 @@ import {
   createProjectsControllers,
   deleteProjectsControllers,
   retrieveAllProjectsControllers,
+  retrieveProjectControllers,
   updateProjectsControllers,
 } from "../controllers/projects.controllers";
+import { validateProjectMiddleware } from "../middlewares/projects/validProject.middleware";
 
 export const projectsRoutes: Router = Router();
 
 projectsRoutes.post(
   "",
-  validateBodyMiddleware(projectsCreateSchema),
   tokenValidationMiddleware,
+  validateBodyMiddleware(projectsCreateSchema),
   createProjectsControllers
 );
 
 projectsRoutes.get("", retrieveAllProjectsControllers);
 
+projectsRoutes.get(
+  "/:projectId",
+  tokenValidationMiddleware,
+  retrieveProjectControllers
+);
+
 projectsRoutes.patch(
   "/:projectId",
-  validateBodyMiddleware(projectsUpdateSchema),
   tokenValidationMiddleware,
+  validateProjectMiddleware,
+  validateBodyMiddleware(projectsUpdateSchema),
   updateProjectsControllers
 );
 
 projectsRoutes.delete(
   "/:projectId",
   tokenValidationMiddleware,
+  validateProjectMiddleware,
   deleteProjectsControllers
 );
