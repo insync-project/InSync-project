@@ -1,17 +1,20 @@
 import { AppDataSource } from "../../data-source";
 import { Project } from "../../entities";
 import { AppError } from "../../errors";
-import { iProjectsUpdateBodySchema } from "../../interfaces/projects.interfaces";
+import {
+  iProjectsCreateReturnSchema,
+  iProjectsUpdateBodySchema,
+} from "../../interfaces/projects.interfaces";
 import { projectsCreateReturnSchema } from "../../schemas/projects.schemas";
 
 export const updateProjectsService = async (
   payload: iProjectsUpdateBodySchema,
   projectId: string,
   userId: string | undefined
-): Promise<any> => {
+): Promise<iProjectsCreateReturnSchema> => {
   const projectRepo = AppDataSource.getRepository(Project);
 
-  const findProject = await projectRepo.findOne({
+  const findProject: Project | null = await projectRepo.findOne({
     where: {
       id: Number(projectId),
     },

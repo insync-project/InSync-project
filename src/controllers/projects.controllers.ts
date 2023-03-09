@@ -5,6 +5,7 @@ import {
 } from "../interfaces/projects.interfaces";
 import { createProjectsService } from "../services/projects/createProjects.service";
 import { updateProjectsService } from "../services/projects/updateProjects.service";
+import { deleteProjectService } from "../services/projects/deleteProjects.service";
 
 export const createProjectsControllers = async (
   req: Request,
@@ -33,4 +34,13 @@ export const updateProjectsControllers = async (
   );
 
   return res.status(200).json(updatedProject);
+};
+
+export const deleteProjectsControllers = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  await deleteProjectService(req);
+
+  return res.status(204).send();
 };
