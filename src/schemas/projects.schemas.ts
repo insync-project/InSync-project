@@ -3,7 +3,6 @@ import {
   devTypeProjectRole,
   statusProjectRole,
 } from "../entities/projects.entities";
-import { returnCreateUser } from "./users.schemas";
 
 export const projectsSchemas = z.object({
   id: z.number().positive().int(),
@@ -25,6 +24,19 @@ export const projectsSchemas = z.object({
   deletedAt: z.string().nullable(),
 });
 
+const returnCreateUser = z.object({
+  id: z.number(),
+  name: z.string(),
+  email: z.string(),
+  nickname: z.string(),
+  admin: z.boolean(),
+  description: z.string().nullable(),
+  avatar: z.string().nullable(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+  deletedAt: z.string().nullable(),
+});
+
 export const projectsCreateSchema = projectsSchemas.omit({
   createdAt: true,
   deletedAt: true,
@@ -39,3 +51,15 @@ export const projectsCreateReturnSchema = projectsSchemas.extend({
 
 export const projectsCreateReturnSchemaArray =
   projectsCreateReturnSchema.array();
+
+export const projectsUpdateSchema = projectsCreateSchema
+  .extend({
+    status: z.union([
+      z.literal(statusProjectRole.OPEN),
+      z.literal(statusProjectRole.CLOSED),
+      z.literal(statusProjectRole.INPROCESS),
+    ]),
+  })
+  .partial();
+
+export const projectsUpdateBodySchema = projectsUpdateSchema.required();

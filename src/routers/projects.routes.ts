@@ -3,9 +3,13 @@ import { validateBodyMiddleware } from "../middlewares/global/validateBody.middl
 import {
   projectsCreateReturnSchema,
   projectsCreateSchema,
+  projectsUpdateSchema,
 } from "../schemas/projects.schemas";
 import { tokenValidationMiddleware } from "../middlewares/global/validateToken.middleware";
-import { createProjectsControllers } from "../controllers/projects.controllers";
+import {
+  createProjectsControllers,
+  updateProjectsControllers,
+} from "../controllers/projects.controllers";
 import { Project } from "../entities";
 import { AppDataSource } from "../data-source";
 
@@ -16,6 +20,13 @@ projectsRoutes.post(
   validateBodyMiddleware(projectsCreateSchema),
   tokenValidationMiddleware,
   createProjectsControllers
+);
+
+projectsRoutes.patch(
+  "/:projectId",
+  validateBodyMiddleware(projectsUpdateSchema),
+  tokenValidationMiddleware,
+  updateProjectsControllers
 );
 
 projectsRoutes.get(
