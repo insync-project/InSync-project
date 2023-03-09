@@ -4,6 +4,8 @@ import {
   projectsCreateReturnSchemaArray,
   projectsCreateSchema,
   projectsSchemas,
+  projectsUpdateBodySchema,
+  projectsUpdateSchema,
 } from "../schemas/projects.schemas";
 
 export type iProjectsSchema = z.infer<typeof projectsSchemas>;
@@ -16,4 +18,10 @@ export type iProjectsCreateReturnSchema = z.infer<
 
 export type iProjectsCreateReturnSchemaArray = z.infer<
   typeof projectsCreateReturnSchemaArray
+>;
+
+export type iProjectsUpdateSchema = z.infer<typeof projectsUpdateSchema>;
+
+export type iProjectsUpdateBodySchema = z.infer<
+  typeof projectsUpdateBodySchema
 >;
