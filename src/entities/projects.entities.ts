@@ -57,18 +57,18 @@ export class Project {
   @DeleteDateColumn({ type: "date" })
   deletedAt: string;
 
-  @OneToMany(
-    () => ProjectTechnology,
-    (projectTechnology) => projectTechnology.technology
-  )
-  projectTechnologies: ProjectTechnology[];
-
   @ManyToOne(() => User)
   owner: User;
+
+  @OneToMany(
+    () => ProjectTechnology,
+    (projectTechnology) => projectTechnology.project
+  )
+  projectTechnologies: ProjectTechnology[];
 
   @OneToMany(
     () => UserProjectTeam,
     (userProjectTeam) => userProjectTeam.project
   )
-  team: UserProjectTeam;
+  team: UserProjectTeam[];
 }

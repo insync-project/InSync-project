@@ -16,7 +16,7 @@ export class ProjectTechnology {
   addedAt: string;
 
   @ManyToOne(() => Project)
-  user: Project;
+  project: Project;
 
   @ManyToOne(() => Technology)
   technology: Technology;

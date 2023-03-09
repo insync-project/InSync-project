@@ -51,15 +51,12 @@ export class User {
   @DeleteDateColumn({ type: "date" })
   deletedAt: string;
 
-  @OneToMany(
-    () => UserTechnology,
-    (userTechnology) => userTechnology.technology
-  )
-  userTechnologies: UserTechnology[];
-
   @OneToOne(() => SocialMedia)
   @JoinColumn()
   socialMedia?: SocialMedia | null | undefined;
+
+  @OneToMany(() => UserTechnology, (userTechnology) => userTechnology.user)
+  userTechnologies: UserTechnology[];
 
   @OneToMany(() => Project, (project) => project.owner)
   project: Project[];
