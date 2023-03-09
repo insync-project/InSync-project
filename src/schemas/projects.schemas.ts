@@ -4,7 +4,6 @@ import {
   statusProjectRole,
 } from "../entities/projects.entities";
 import { returnCreateUser } from "./users.schemas";
-import { allReturnTechnologiesSchema } from "./technologies.schemas";
 
 export const projectsSchemas = z.object({
   id: z.number().positive().int(),
@@ -37,3 +36,6 @@ export const projectsCreateSchema = projectsSchemas.omit({
 export const projectsCreateReturnSchema = projectsSchemas.extend({
   owner: returnCreateUser,
 });
+
+export const projectsCreateReturnSchemaArray =
+  projectsCreateReturnSchema.array();
