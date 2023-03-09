@@ -12,20 +12,20 @@ export class SocialMedia {
   @PrimaryGeneratedColumn("increment")
   id: number;
 
-  @Column({ type: "varchar", length: "50" })
-  linkedln: string;
+  @Column({ type: "varchar", length: "50", nullable: true })
+  linkedln?: string | null | undefined;
 
-  @Column({ type: "varchar", length: "50" })
-  github: string;
+  @Column({ type: "varchar", length: "50", nullable: true })
+  github?: string | null | undefined;
 
-  @Column({ type: "varchar", length: "120" })
-  youtube: string;
+  @Column({ type: "varchar", length: "120", nullable: true })
+  youtube?: string | null | undefined;
 
-  @Column({ type: "varchar", length: "50" })
-  instagram: string;
+  @Column({ type: "varchar", length: "50", nullable: true })
+  instagram?: string | null | undefined;
 
-  @Column({ type: "varchar", length: "50" })
-  discord: string;
+  @Column({ type: "varchar", length: "50", nullable: true })
+  discord?: string | null | undefined;
 
   @CreateDateColumn({ type: "date" })
   createdAt: string;
