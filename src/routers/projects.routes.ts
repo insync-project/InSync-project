@@ -8,6 +8,7 @@ import {
 import { tokenValidationMiddleware } from "../middlewares/global/validateToken.middleware";
 import {
   createProjectsControllers,
+  deleteProjectsControllers,
   updateProjectsControllers,
 } from "../controllers/projects.controllers";
 import { Project } from "../entities";
@@ -27,6 +28,12 @@ projectsRoutes.patch(
   validateBodyMiddleware(projectsUpdateSchema),
   tokenValidationMiddleware,
   updateProjectsControllers
+);
+
+projectsRoutes.delete(
+  "/:projectId",
+  tokenValidationMiddleware,
+  deleteProjectsControllers
 );
 
 projectsRoutes.get(
