@@ -8,6 +8,7 @@ import { createProjectsService } from "../services/projects/createProjects.servi
 import { updateProjectsService } from "../services/projects/updateProjects.service";
 import { deleteProjectService } from "../services/projects/deleteProjects.service";
 import { retrieveAllProjectsService } from "../services/projects/retrieveAllProjects.service";
+import { retrieveProjectService } from "../services/projects/retrieveProject.service";
 
 export const createProjectsControllers = async (
   req: Request,
@@ -31,19 +32,22 @@ export const retrieveAllProjectsControllers = async (
   return res.status(200).json(allProjects);
 };
 
+export const retrieveProjectControllers = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  const project = await retrieveProjectService(req);
+
+  return res.status(200).json(project);
+};
+
 export const updateProjectsControllers = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
   const projectsInfo: iProjectsUpdateBodySchema = req.body;
-  const projectId: string = req.params.projectId;
-  const userId: string | undefined = req.userTokenInfos.id;
 
-  const updatedProject = await updateProjectsService(
-    projectsInfo,
-    projectId,
-    userId
-  );
+  const updatedProject = await updateProjectsService(projectsInfo, req);
 
   return res.status(200).json(updatedProject);
 };

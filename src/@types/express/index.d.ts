@@ -1,4 +1,4 @@
-export {};
+import { Project } from "../../entities";
 
 declare global {
   namespace Express {
@@ -8,6 +8,7 @@ declare global {
         id: string | undefined;
         admin: boolean | undefined;
       };
+      projectInfos: Project;
     }
   }
 }
