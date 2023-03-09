@@ -1,5 +1,4 @@
-import { IUser } from "../../interfaces/users.interfaces";
-// alterar para um import válido quando existir um no código;
+export {};
 
 declare global {
   namespace Express {

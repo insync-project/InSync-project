@@ -44,7 +44,7 @@ export class Project {
   @Column({ type: "enum", enum: devTypeProjectRole })
   devType: devTypeProjectRole;
 
-  @Column({ type: "varchar", length: "150" })
+  @Column({ type: "varchar", length: "150", nullable: true })
   cover?: string | null | undefined;
 
   @CreateDateColumn({ type: "date" })
