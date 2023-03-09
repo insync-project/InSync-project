@@ -37,10 +37,16 @@ const returnCreateUser = z.object({
   deletedAt: z.string().nullable(),
 });
 
-export const returnTechnologySchema = z
+export const returnTechnologySchema = z.object({
+  name: z.string().max(30),
+  id: z.number(),
+});
+
+export const returnProjectsTechnolgies = z
   .object({
-    name: z.string().max(30),
     id: z.number(),
+    addedAt: z.string(),
+    technology: returnTechnologySchema,
   })
   .array();
 
@@ -54,7 +60,7 @@ export const projectsCreateSchema = projectsSchemas.omit({
 
 export const projectsCreateReturnSchema = projectsSchemas.extend({
   owner: returnCreateUser,
-  projectTechnologies: returnTechnologySchema,
+  projectTechnologies: returnProjectsTechnolgies,
 });
 
 export const projectsCreateReturnSchemaArray =
