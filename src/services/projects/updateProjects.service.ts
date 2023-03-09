@@ -2,6 +2,7 @@ import { AppDataSource } from "../../data-source";
 import { Project } from "../../entities";
 import { AppError } from "../../errors";
 import { iProjectsUpdateBodySchema } from "../../interfaces/projects.interfaces";
+import { projectsCreateReturnSchema } from "../../schemas/projects.schemas";
 
 export const updateProjectsService = async (
   payload: iProjectsUpdateBodySchema,
@@ -32,5 +33,7 @@ export const updateProjectsService = async (
 
   const newProject = await projectRepo.save(updateProject);
 
-  return newProject;
+  const projectReturn = projectsCreateReturnSchema.parse(newProject);
+
+  return projectReturn;
 };
