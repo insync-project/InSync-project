@@ -1,9 +1,11 @@
 import { Router } from "express";
 import {
   createUsersController,
+  deleteUserController,
   loginUsersController,
 } from "../controllers/users.controllers";
 import { validateBodyMiddleware } from "../middlewares/global/validateBody.middlewares";
+import { tokenValidationMiddleware } from "../middlewares/global/validateToken.middleware";
 import { validateUniqueRegisterMiddleware } from "../middlewares/users/validateUniqueRegister.middlewares";
 import { createUserSchema, userLoginSchema } from "../schemas/users.schemas";
 
@@ -20,3 +22,5 @@ usersRoutes.post(
   validateBodyMiddleware(userLoginSchema),
   loginUsersController
 );
+
+usersRoutes.delete("", tokenValidationMiddleware, deleteUserController);

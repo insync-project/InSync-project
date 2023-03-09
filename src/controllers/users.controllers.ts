@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { User } from "../entities";
 import {
   ICreateUser,
   ILoginBody,
@@ -26,4 +25,13 @@ export const loginUsersController = async (
   const loginData: ILoginBody = req.body;
   const response: ILoginReturn = await loginService(loginData);
   return res.status(200).json({ ...response });
+};
+
+export const deleteUserController = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  // const userId: number = parseInt(req.params.id);
+  // await deleteUsersService(userId);
+  return res.status(204).send();
 };
