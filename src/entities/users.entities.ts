@@ -33,12 +33,12 @@ export class User {
   password: string;
 
   @Column({ type: "boolean", default: false })
-  admin: boolean = false;
+  admin?: boolean = false;
 
   @Column({ type: "text", nullable: true })
   description?: string | null | undefined;
 
-  @Column({ type: "varchar", length: "150" })
+  @Column({ type: "varchar", length: "150", nullable: true })
   avatar?: string | null | undefined;
 
   @CreateDateColumn({ type: "date" })
