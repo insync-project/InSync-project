@@ -2,9 +2,11 @@ import { Request, Response } from "express";
 import { User } from "../entities";
 import {
   ICreateUser,
+  ILoginBody,
   IReturnCreateUserFull,
 } from "../interfaces/users.interfaces";
 import { createUsersService } from "../services/users/createUsers.service";
+import { loginService } from "../services/users/loginUsers.service";
 
 export const createUsersController = async (
   req: Request,
@@ -15,4 +17,13 @@ export const createUsersController = async (
   const newUser: IReturnCreateUserFull = await createUsersService(body);
 
   return res.status(201).json({ ...newUser });
+};
+
+export const loginUsersController = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  const loginData: ILoginBody = req.body;
+  const response: string = await loginService(loginData);
+  return res.status(200).json({ token: response });
 };

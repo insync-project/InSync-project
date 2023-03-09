@@ -38,6 +38,6 @@ export const returnFullCreateUserSchema = returnCreateUser.extend({
 });
 
 export const userLoginSchema = z.object({
-  email: z.string().email(),
+  user: z.string(),
   password: z.string(),
 });
