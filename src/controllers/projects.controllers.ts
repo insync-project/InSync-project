@@ -1,11 +1,13 @@
 import { Request, Response } from "express";
 import {
+  iProjectsCreateReturnSchemaArray,
   iProjectsCreateSchema,
   iProjectsUpdateBodySchema,
 } from "../interfaces/projects.interfaces";
 import { createProjectsService } from "../services/projects/createProjects.service";
 import { updateProjectsService } from "../services/projects/updateProjects.service";
 import { deleteProjectService } from "../services/projects/deleteProjects.service";
+import { retrieveAllProjectsService } from "../services/projects/retrieveAllProjects.service";
 
 export const createProjectsControllers = async (
   req: Request,
@@ -17,6 +19,16 @@ export const createProjectsControllers = async (
   const createdProject = await createProjectsService(projectsInfo, userId);
 
   return res.status(201).json(createdProject);
+};
+
+export const retrieveAllProjectsControllers = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  const allProjects: iProjectsCreateReturnSchemaArray =
+    await retrieveAllProjectsService();
+
+  return res.status(200).json(allProjects);
 };
 
 export const updateProjectsControllers = async (
