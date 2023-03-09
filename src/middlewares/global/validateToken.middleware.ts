@@ -29,10 +29,6 @@ export const tokenValidationMiddleware = async (
         id: decoded.sub,
       };
 
-      // req.userTokenInfos.admin = decoded.admin;
-      // req.userTokenInfos.email = decoded.email;
-      // req.userTokenInfos.id = decoded.sub;
-
       return {};
     }
   );

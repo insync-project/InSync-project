@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { projectsSchemas } from "./projects.schemas";
 
 export const createUserSchema = z.object({
   name: z.string().max(50),
@@ -33,11 +34,24 @@ export const returnCreateUser = z.object({
   deletedAt: z.string().nullable(),
 });
 
-export const returnFullCreateUserSchema = returnCreateUser.extend({
-  socialMedia: returnSocialMedia,
-});
+export const returnFullCreateUserSchema = returnCreateUser
+  .extend({
+    socialMedia: returnSocialMedia.omit({
+      id: true,
+      createdAt: true,
+      updatedAt: true,
+      deletedAt: true,
+    }),
+    project: projectsSchemas.omit({ deletedAt: true }).array(),
+  })
+  .omit({ admin: true, createdAt: true, updatedAt: true, deletedAt: true });
 
 export const userLoginSchema = z.object({
   user: z.string(),
   password: z.string(),
+});
+
+export const returnLoginSchema = z.object({
+  token: z.string(),
+  user: returnFullCreateUserSchema,
 });

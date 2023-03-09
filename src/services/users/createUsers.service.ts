@@ -1,15 +1,13 @@
+import { sign } from "jsonwebtoken";
 import { Repository } from "typeorm";
 import { AppDataSource } from "../../data-source";
 import { SocialMedia, User } from "../../entities";
-import {
-  ICreateUser,
-  IReturnCreateUserFull,
-} from "../../interfaces/users.interfaces";
-import { returnFullCreateUserSchema } from "../../schemas/users.schemas";
+import { ICreateUser, ILoginReturn } from "../../interfaces/users.interfaces";
+import { returnLoginSchema } from "../../schemas/users.schemas";
 
 export const createUsersService = async (
   payload: ICreateUser
-): Promise<IReturnCreateUserFull> => {
+): Promise<ILoginReturn> => {
   const usersRepository: Repository<User> = AppDataSource.getRepository(User);
 
   const socialMediaRepository: Repository<SocialMedia> =
@@ -30,8 +28,35 @@ export const createUsersService = async (
   });
   const newUser = await usersRepository.save(user);
 
-  const response: IReturnCreateUserFull =
-    returnFullCreateUserSchema.parse(newUser);
+  const token: string = sign(
+    {
+      email: newUser.email,
+      admin: newUser.admin,
+    },
+    String(process.env.SECRET_KEY),
+    {
+      expiresIn: "24h",
+      subject: String(newUser.id),
+    }
+  );
 
-  return response;
+  const userLogin: User | null = await usersRepository.findOne({
+    where: {
+      id: newUser.id,
+    },
+    relations: {
+      userTechnologies: {
+        technology: true,
+      },
+      socialMedia: true,
+      project: true,
+    },
+  });
+
+  const reponseLogin: ILoginReturn = returnLoginSchema.parse({
+    token,
+    user: userLogin,
+  });
+
+  return reponseLogin;
 };

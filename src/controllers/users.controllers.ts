@@ -1,9 +1,8 @@
 import { Request, Response } from "express";
-import { User } from "../entities";
 import {
   ICreateUser,
   ILoginBody,
-  IReturnCreateUserFull,
+  ILoginReturn,
 } from "../interfaces/users.interfaces";
 import { createUsersService } from "../services/users/createUsers.service";
 import { loginService } from "../services/users/loginUsers.service";
@@ -14,7 +13,7 @@ export const createUsersController = async (
 ): Promise<Response> => {
   const body: ICreateUser = req.body;
 
-  const newUser: IReturnCreateUserFull = await createUsersService(body);
+  const newUser: ILoginReturn = await createUsersService(body);
 
   return res.status(201).json({ ...newUser });
 };
@@ -24,6 +23,15 @@ export const loginUsersController = async (
   res: Response
 ): Promise<Response> => {
   const loginData: ILoginBody = req.body;
-  const response: string = await loginService(loginData);
-  return res.status(200).json({ token: response });
+  const response: ILoginReturn = await loginService(loginData);
+  return res.status(200).json({ ...response });
+};
+
+export const deleteUserController = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  // const userId: number = parseInt(req.params.id);
+  // await deleteUsersService(userId);
+  return res.status(204).send();
 };
