@@ -20,7 +20,7 @@ const returnSocialMedia = z.object({
   deletedAt: z.string().nullable(),
 });
 
-const returnCreateUser = z.object({
+export const returnCreateUser = z.object({
   id: z.number(),
   name: z.string(),
   email: z.string(),
