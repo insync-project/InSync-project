@@ -34,10 +34,23 @@ export const createProjectsService = async (
     owner: { ...userProjects },
   });
 
-  await projectRepo.save(project);
+  const newProject: Project = await projectRepo.save(project);
+
+  const responseProject: Project | null = await projectRepo.findOne({
+    where: {
+      id: newProject.id,
+    },
+    relations: {
+      projectTechnologies: {
+        technology: true,
+      },
+      owner: true,
+      team: true,
+    },
+  });
 
   const returnUser: iProjectsCreateReturnSchema =
-    projectsCreateReturnSchema.parse(project);
+    projectsCreateReturnSchema.parse(responseProject);
 
   return returnUser;
 };
