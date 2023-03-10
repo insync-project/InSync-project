@@ -7,18 +7,27 @@ export const retrieveAllProjectsService =
   async (): Promise<iProjectsCreateReturnSchemaArray> => {
     const projectsRepo = AppDataSource.getRepository(Project);
 
-    const projectsResult: Project[] = await projectsRepo.find({
-      relations: {
-        projectTechnologies: {
-          technology: true,
-        },
-        owner: true,
-        team: true,
-      },
-    });
+    const projectsResult = await projectsRepo
+      .createQueryBuilder("projects")
+      .leftJoinAndSelect("projects.owner", "owner")
+      .leftJoinAndSelect("projects.projectTechnologies", "projectTechnologies")
+      .leftJoinAndSelect("projectTechnologies.technology", "technology")
+      .leftJoinAndSelect("projects.team", "team")
+      .leftJoinAndSelect("team.user", "userTeam")
+      .getMany();
 
     const projectParse: iProjectsCreateReturnSchemaArray =
       projectsCreateReturnSchemaArray.parse(projectsResult);
 
-    return projectParse;
+    const filteredProject = projectParse.map((element) => {
+      const returnNewteam = element.team.filter((team) => {
+        return team.waiting === false;
+      });
+      return {
+        ...element,
+        team: returnNewteam,
+      };
+    });
+
+    return filteredProject;
   };

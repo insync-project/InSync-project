@@ -30,13 +30,22 @@ const returnCreateUser = z.object({
   name: z.string(),
   email: z.string(),
   nickname: z.string(),
-  admin: z.boolean(),
   description: z.string().nullable(),
   avatar: z.string().nullable(),
   createdAt: z.string(),
   updatedAt: z.string(),
-  deletedAt: z.string().nullable(),
 });
+
+export const returnCreateTeamsProjects = z
+  .object({
+    id: z.number().positive().int(),
+    waiting: z.boolean().default(true),
+    addedAt: z.string(),
+    updatedAt: z.string(),
+    project: projectsSchemas.optional(),
+    user: returnCreateUser,
+  })
+  .array();
 
 export const returnTechnologySchema = z.object({
   name: z.string().max(30),
@@ -62,7 +71,17 @@ export const projectsCreateSchema = projectsSchemas.omit({
 export const projectsCreateReturnSchema = projectsSchemas.extend({
   owner: returnCreateUser,
   projectTechnologies: returnProjectsTechnolgies,
+  team: returnCreateTeamsProjects,
 });
+
+export const projectReturnNewTeam = projectsCreateReturnSchema
+  .extend({
+    teamWaitingTrue: returnCreateTeamsProjects,
+    teamWaitingFalse: returnCreateTeamsProjects,
+  })
+  .omit({
+    team: true,
+  });
 
 export const projectsCreateReturnSchemaArray =
   projectsCreateReturnSchema.array();
