@@ -4,6 +4,7 @@ import {
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from "typeorm";
 import { Project } from "./projects.entities";
 import { User } from "./users.entities";
@@ -18,6 +19,9 @@ export class UserProjectTeam {
 
   @CreateDateColumn({ type: "date" })
   addedAt: string;
+
+  @UpdateDateColumn({ type: "date" })
+  updatedAt: string;
 
   @ManyToOne(() => Project)
   project: Project;
