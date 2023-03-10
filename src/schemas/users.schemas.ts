@@ -55,3 +55,25 @@ export const returnLoginSchema = z.object({
   token: z.string(),
   user: returnFullCreateUserSchema,
 });
+
+const updateSocialMediaSchema = z.object({
+  linkedln: z.string().max(50).optional(),
+  github: z.string().max(50).optional(),
+  youtube: z.string().max(120).optional(),
+  instagram: z.string().max(50).optional(),
+  discord: z.string().max(50).optional(),
+});
+
+export const updateUserSchema = z.object({
+  name: z.string().max(50).optional(),
+  password: z.string().max(120).optional(),
+  description: z.string().max(500).optional(),
+  avatar: z.string().max(150).optional(),
+  socialMedia: updateSocialMediaSchema.optional(),
+});
+
+export const updateUserNoSocialMediaSchema = updateUserSchema
+  .omit({
+    socialMedia: true,
+  })
+  .required();

@@ -3,9 +3,13 @@ import {
   ICreateUser,
   ILoginBody,
   ILoginReturn,
+  IReturnUser,
+  IUpdateUser,
 } from "../interfaces/users.interfaces";
 import { createUsersService } from "../services/users/createUsers.service";
+import { deleteUsersService } from "../services/users/deleteUsers.service";
 import { loginService } from "../services/users/loginUsers.service";
+import { updateUsersService } from "../services/users/updateUsers.service";
 
 export const createUsersController = async (
   req: Request,
@@ -13,7 +17,7 @@ export const createUsersController = async (
 ): Promise<Response> => {
   const body: ICreateUser = req.body;
 
-  const newUser: ILoginReturn = await createUsersService(body);
+  const newUser: ILoginReturn | any = await createUsersService(body);
 
   return res.status(201).json({ ...newUser });
 };
@@ -31,7 +35,15 @@ export const deleteUserController = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
-  // const userId: number = parseInt(req.params.id);
-  // await deleteUsersService(userId);
+  await deleteUsersService(req);
   return res.status(204).send();
+};
+
+export const updateUsersController = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  const body: IUpdateUser = req.body;
+  const response: IReturnUser = await updateUsersService(req, body);
+  return res.status(200).json({ ...response });
 };

@@ -6,10 +6,7 @@ import { sign } from "jsonwebtoken";
 import { User } from "../../entities";
 import "dotenv/config";
 import { ILoginBody, ILoginReturn } from "../../interfaces/users.interfaces";
-import {
-  returnFullCreateUserSchema,
-  returnLoginSchema,
-} from "../../schemas/users.schemas";
+import { returnLoginSchema } from "../../schemas/users.schemas";
 
 export const loginService = async (
   loginData: ILoginBody
