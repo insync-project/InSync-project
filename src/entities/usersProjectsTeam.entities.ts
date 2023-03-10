@@ -13,9 +13,6 @@ export class UserProjectTeam {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  maxUsers: number;
-
   @Column({ type: "boolean", default: true })
   waiting: boolean = false;
 

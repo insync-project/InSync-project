@@ -48,6 +48,9 @@ export class Project {
   @Column({ type: "varchar", length: "150", nullable: true })
   cover?: string | null | undefined;
 
+  @Column({ type: "int" })
+  maxUsers: number;
+
   @CreateDateColumn({ type: "date" })
   createdAt: string;
 

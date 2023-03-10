@@ -19,6 +19,7 @@ export const projectsSchemas = z.object({
     z.literal(statusProjectRole.INPROCESS),
   ]),
   cover: z.string().max(150).nullable().optional(),
+  maxUsers: z.number().int().positive().min(1).max(10),
   createdAt: z.string(),
   updatedAt: z.string(),
   deletedAt: z.string().nullable(),
