@@ -4,10 +4,11 @@ import { AppDataSource } from "../../data-source";
 import { SocialMedia, User } from "../../entities";
 import { ICreateUser, ILoginReturn } from "../../interfaces/users.interfaces";
 import { returnLoginSchema } from "../../schemas/users.schemas";
+import "dotenv/config";
 
 export const createUsersService = async (
   payload: ICreateUser
-): Promise<ILoginReturn> => {
+): Promise<ILoginReturn | any> => {
   const usersRepository: Repository<User> = AppDataSource.getRepository(User);
 
   const socialMediaRepository: Repository<SocialMedia> =

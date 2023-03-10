@@ -3,11 +3,16 @@ import {
   createUsersController,
   deleteUserController,
   loginUsersController,
+  updateUsersController,
 } from "../controllers/users.controllers";
 import { validateBodyMiddleware } from "../middlewares/global/validateBody.middlewares";
 import { tokenValidationMiddleware } from "../middlewares/global/validateToken.middleware";
 import { validateUniqueRegisterMiddleware } from "../middlewares/users/validateUniqueRegister.middlewares";
-import { createUserSchema, userLoginSchema } from "../schemas/users.schemas";
+import {
+  createUserSchema,
+  updateUserSchema,
+  userLoginSchema,
+} from "../schemas/users.schemas";
 
 export const usersRoutes: Router = Router();
 
@@ -23,4 +28,11 @@ usersRoutes.post(
   loginUsersController
 );
 
-usersRoutes.delete("", tokenValidationMiddleware, deleteUserController);
+usersRoutes.delete("/:id", tokenValidationMiddleware, deleteUserController);
+
+usersRoutes.patch(
+  "/:id",
+  tokenValidationMiddleware,
+  validateBodyMiddleware(updateUserSchema),
+  updateUsersController
+);
