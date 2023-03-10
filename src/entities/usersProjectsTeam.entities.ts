@@ -15,7 +15,7 @@ export class UserProjectTeam {
   id: number;
 
   @Column({ type: "boolean", default: true })
-  waiting: boolean = false;
+  waiting: boolean = true;
 
   @CreateDateColumn({ type: "date" })
   addedAt: string;

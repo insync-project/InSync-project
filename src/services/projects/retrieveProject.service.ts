@@ -1,27 +1,35 @@
 import { Request } from "express";
 import { AppDataSource } from "../../data-source";
 import { Project } from "../../entities";
-import { iProjectsCreateReturnSchema } from "../../interfaces/projects.interfaces";
-import { projectsCreateReturnSchema } from "../../schemas/projects.schemas";
+import {
+  iProjectReturnNewTeam,
+  iProjectsCreateReturnSchema,
+  iReturnTeamProjectsWaiting,
+} from "../../interfaces/projects.interfaces";
+import {
+  projectReturnNewTeam,
+  projectsCreateReturnSchema,
+} from "../../schemas/projects.schemas";
 import { AppError } from "../../errors";
 
 export const retrieveProjectService = async (
   req: Request
-): Promise<iProjectsCreateReturnSchema> => {
+): Promise<iProjectReturnNewTeam> => {
   const projectsRepo = AppDataSource.getRepository(Project);
 
-  const projectsResult: Project | null = await projectsRepo.findOne({
-    where: {
-      id: Number(req.params.projectId),
-    },
-    relations: {
-      projectTechnologies: {
-        technology: true,
-      },
-      owner: true,
-      team: true,
-    },
-  });
+  console.log(req.params.projectId);
+
+  const projectsResult = await projectsRepo
+    .createQueryBuilder("projects")
+    .leftJoinAndSelect("projects.owner", "owner")
+    .leftJoinAndSelect("projects.projectTechnologies", "projectTechnologies")
+    .leftJoinAndSelect("projectTechnologies.technology", "technology")
+    .leftJoinAndSelect("projects.team", "team")
+    .leftJoinAndSelect("team.user", "userTeam")
+    .where("projects.id = :projectId", {
+      projectId: Number(req.params.projectId),
+    })
+    .getOne();
 
   if (!projectsResult) {
     throw new AppError("Project not found!", 404);
@@ -30,5 +38,22 @@ export const retrieveProjectService = async (
   const projectParse: iProjectsCreateReturnSchema =
     projectsCreateReturnSchema.parse(projectsResult);
 
-  return projectParse;
+  const teamWaitingTrue: iReturnTeamProjectsWaiting = [];
+  const teamWaitingFalse: iReturnTeamProjectsWaiting = [];
+
+  projectParse.team.forEach((element) => {
+    if (element.waiting) {
+      teamWaitingTrue.push(element);
+    } else {
+      teamWaitingFalse.push(element);
+    }
+  });
+
+  const newProjectTeam: iProjectReturnNewTeam = projectReturnNewTeam.parse({
+    ...projectParse,
+    teamWaitingFalse,
+    teamWaitingTrue,
+  });
+
+  return newProjectTeam;
 };

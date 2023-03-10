@@ -1,11 +1,13 @@
 import { z } from "zod";
 import {
+  projectReturnNewTeam,
   projectsCreateReturnSchema,
   projectsCreateReturnSchemaArray,
   projectsCreateSchema,
   projectsSchemas,
   projectsUpdateBodySchema,
   projectsUpdateSchema,
+  returnCreateTeamsProjects,
 } from "../schemas/projects.schemas";
 
 export type iProjectsSchema = z.infer<typeof projectsSchemas>;
@@ -25,3 +27,9 @@ export type iProjectsUpdateSchema = z.infer<typeof projectsUpdateSchema>;
 export type iProjectsUpdateBodySchema = z.infer<
   typeof projectsUpdateBodySchema
 >;
+
+export type iReturnTeamProjectsWaiting = z.infer<
+  typeof returnCreateTeamsProjects
+>;
+
+export type iProjectReturnNewTeam = z.infer<typeof projectReturnNewTeam>;
