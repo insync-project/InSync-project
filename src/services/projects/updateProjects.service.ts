@@ -6,12 +6,17 @@ import {
   iProjectsUpdateBodySchema,
 } from "../../interfaces/projects.interfaces";
 import { projectsCreateReturnSchema } from "../../schemas/projects.schemas";
+import { AppError } from "../../errors";
 
 export const updateProjectsService = async (
   payload: iProjectsUpdateBodySchema,
   req: Request
 ): Promise<iProjectsCreateReturnSchema> => {
   const projectRepo = AppDataSource.getRepository(Project);
+
+  if (req.projectInfos.status === "Finalizado") {
+    throw new AppError("Unable to make changes to a finished project!", 400);
+  }
 
   const updateProject: Project = projectRepo.create({
     ...req.projectInfos,
