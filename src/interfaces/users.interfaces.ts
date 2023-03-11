@@ -2,7 +2,7 @@ import { z } from "zod";
 import {
   createUserSchema,
   returnFullCreateUserSchema,
-  returnLoginSchema,
+  returnRegisterSchema,
   updateUserSchema,
   userLoginSchema,
 } from "../schemas/users.schemas";
@@ -10,7 +10,7 @@ import {
 export type ICreateUser = z.infer<typeof createUserSchema>;
 export type ILoginBody = z.infer<typeof userLoginSchema>;
 
-export type ILoginReturn = z.infer<typeof returnLoginSchema>;
+export type IRegisterReturn = z.infer<typeof returnRegisterSchema>;
 
 export type IUpdateUser = z.infer<typeof updateUserSchema>;
 

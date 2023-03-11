@@ -15,6 +15,7 @@ import {
 import { SocialMedia } from "./socialMedia.entities";
 import { Project } from "./projects.entities";
 import { UserTechnology } from "./usersTechnologies.entities";
+import { UserProjectTeam } from "./usersProjectsTeam.entities";
 
 @Entity("users")
 export class User {
@@ -60,6 +61,9 @@ export class User {
 
   @OneToMany(() => Project, (project) => project.owner)
   project: Project[];
+
+  @OneToMany(() => UserProjectTeam, (userProjectTeam) => userProjectTeam.user)
+  userProjectTeam: UserProjectTeam[];
 
   @BeforeInsert()
   @BeforeUpdate()

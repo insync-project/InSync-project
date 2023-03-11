@@ -51,9 +51,9 @@ export const userLoginSchema = z.object({
   password: z.string(),
 });
 
-export const returnLoginSchema = z.object({
+export const returnRegisterSchema = z.object({
   token: z.string(),
-  user: returnFullCreateUserSchema,
+  message: z.string(),
 });
 
 const updateSocialMediaSchema = z.object({

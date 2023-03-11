@@ -2,13 +2,16 @@ import { sign } from "jsonwebtoken";
 import { Repository } from "typeorm";
 import { AppDataSource } from "../../data-source";
 import { SocialMedia, User } from "../../entities";
-import { ICreateUser, ILoginReturn } from "../../interfaces/users.interfaces";
-import { returnLoginSchema } from "../../schemas/users.schemas";
+import {
+  ICreateUser,
+  IRegisterReturn,
+} from "../../interfaces/users.interfaces";
+import { returnRegisterSchema } from "../../schemas/users.schemas";
 import "dotenv/config";
 
 export const createUsersService = async (
   payload: ICreateUser
-): Promise<ILoginReturn | any> => {
+): Promise<IRegisterReturn> => {
   const usersRepository: Repository<User> = AppDataSource.getRepository(User);
 
   const socialMediaRepository: Repository<SocialMedia> =
@@ -41,23 +44,10 @@ export const createUsersService = async (
     }
   );
 
-  const userLogin: User | null = await usersRepository.findOne({
-    where: {
-      id: newUser.id,
-    },
-    relations: {
-      userTechnologies: {
-        technology: true,
-      },
-      socialMedia: true,
-      project: true,
-    },
-  });
-
-  const reponseLogin: ILoginReturn = returnLoginSchema.parse({
+  const reponseRegister: IRegisterReturn = returnRegisterSchema.parse({
     token,
-    user: userLogin,
+    message: "User created successfully!",
   });
 
-  return reponseLogin;
+  return reponseRegister;
 };
