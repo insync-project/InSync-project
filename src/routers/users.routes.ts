@@ -3,6 +3,7 @@ import {
   createUsersController,
   deleteUserController,
   loginUsersController,
+  retrieveProfileUsersController,
   updateUsersController,
 } from "../controllers/users.controllers";
 import { validateBodyMiddleware } from "../middlewares/global/validateBody.middlewares";
@@ -35,4 +36,10 @@ usersRoutes.patch(
   tokenValidationMiddleware,
   validateBodyMiddleware(updateUserSchema),
   updateUsersController
+);
+
+usersRoutes.get(
+  "/profile",
+  tokenValidationMiddleware,
+  retrieveProfileUsersController
 );
