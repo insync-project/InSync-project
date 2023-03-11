@@ -5,12 +5,9 @@ import { AppError } from "../../errors";
 import { sign } from "jsonwebtoken";
 import { User } from "../../entities";
 import "dotenv/config";
-import { ILoginBody, ILoginReturn } from "../../interfaces/users.interfaces";
-import { returnLoginSchema } from "../../schemas/users.schemas";
+import { ILoginBody } from "../../interfaces/users.interfaces";
 
-export const loginService = async (
-  loginData: ILoginBody
-): Promise<ILoginReturn> => {
+export const loginService = async (loginData: ILoginBody): Promise<string> => {
   const usersRepository: Repository<User> = AppDataSource.getRepository(User);
 
   const loginToValidate: User | null = await usersRepository.findOneBy([
@@ -43,20 +40,5 @@ export const loginService = async (
     }
   );
 
-  const user: User | null = await usersRepository.findOne({
-    where: {
-      id: loginToValidate.id,
-    },
-    relations: {
-      userTechnologies: {
-        technology: true,
-      },
-      socialMedia: true,
-      project: true,
-    },
-  });
-
-  const reponseLogin: ILoginReturn = returnLoginSchema.parse({ token, user });
-
-  return reponseLogin;
+  return token;
 };
