@@ -1,17 +1,29 @@
 import { AppDataSource } from "../../data-source";
-import { Project, ProjectTechnology, Technology, User, UserTechnology } from "../../entities";
+import {
+	Project,
+	ProjectTechnology,
+	Technology,
+	User,
+	UserTechnology,
+} from "../../entities";
 import { Repository } from "typeorm";
 import { AppError } from "../../errors";
 
 export const createProjectTechnologiesService = async (
 	technologies: any,
+	project: any,
 	projectId: number
 ): Promise<any> => {
 	const projectTechnologyRepository: Repository<ProjectTechnology> =
 		AppDataSource.getRepository(ProjectTechnology);
-	const projectRepository: Repository<Project> = AppDataSource.getRepository(Project);
+	const projectRepository: Repository<Project> =
+		AppDataSource.getRepository(Project);
 	const technologyRepository: Repository<Technology> =
 		AppDataSource.getRepository(Technology);
+
+	if (project.status === "Finalizado") {
+		throw new AppError("Unable to make changes to a finished project!", 400);
+	}
 
 	let findProjectTech = await projectTechnologyRepository.find({
 		where: {
@@ -30,10 +42,15 @@ export const createProjectTechnologiesService = async (
 		arrProjectTech.push(tech.technology.name);
 	});
 
-	const filteredTechs = technologies.filter((elem: any) => !arrProjectTech.includes(elem));
+	const filteredTechs = technologies.filter(
+		(elem: any) => !arrProjectTech.includes(elem)
+	);
 
 	if (filteredTechs.length == 0) {
-		throw new AppError("Essas tecnologias já foram adicionadas a esse projeto", 400);
+		throw new AppError(
+			"Essas tecnologias já foram adicionadas a esse projeto",
+			400
+		);
 	}
 
 	const findProject = await projectRepository.findOne({

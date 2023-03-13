@@ -1,15 +1,19 @@
 import { AppDataSource } from "../../data-source";
 import { Project, ProjectTechnology } from "../../entities";
 import { In, Repository } from "typeorm";
+import { AppError } from "../../errors";
 
 export const removeProjectTechnologiesService = async (
 	technologies: any,
+	project: any,
 	projectId: number
 ): Promise<void> => {
 	const projectTechnologyRepository: Repository<ProjectTechnology> =
 		AppDataSource.getRepository(ProjectTechnology);
-	const projectRepository: Repository<Project> =
-		AppDataSource.getRepository(Project);
+
+	if (project.status === "Finalizado") {
+		throw new AppError("Unable to make changes to a finished project!", 400);
+	}
 
 	let findProjectTech = await projectTechnologyRepository.find({
 		where: {
@@ -48,6 +52,10 @@ export const removeProjectTechnologiesService = async (
 	const filteredTechs = findBodyTechs.filter((elem: any) =>
 		projectTechs.includes(elem)
 	);
+
+	if (filteredTechs.length == 0) {
+		throw new AppError("Essas tecnologias já foram removidas", 400);
+	}
 
 	await projectTechnologyRepository
 		.createQueryBuilder()

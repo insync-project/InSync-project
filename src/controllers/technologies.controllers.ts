@@ -59,10 +59,12 @@ export const createProjectTechnologiesController = async (
 	response: Response
 ) => {
 	const technologies = request.body.techs;
+	const project = request.projectInfos;
 	const projectId = parseInt(request.params.projectId!);
 
 	const newTechnology = await createProjectTechnologiesService(
 		technologies,
+		project,
 		projectId
 	);
 
@@ -86,9 +88,10 @@ export const removeProjectTechnologiesController = async (
 	response: Response
 ) => {
 	const technologies = request.body.techs;
+	const project = request.projectInfos;
 	const projectId = parseInt(request.params.projectId!);
 
-	await removeProjectTechnologiesService(technologies, projectId);
+	await removeProjectTechnologiesService(technologies, project, projectId);
 
 	return response.status(204).send();
 };
