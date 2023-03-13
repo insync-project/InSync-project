@@ -1,6 +1,7 @@
 import { AppDataSource } from "../../data-source";
-import { User, UserTechnology } from "../../entities";
+import { UserTechnology } from "../../entities";
 import { In, Repository } from "typeorm";
+import { AppError } from "../../errors";
 
 export const removeUserTechnologiesService = async (
 	technologies: any,
@@ -8,7 +9,6 @@ export const removeUserTechnologiesService = async (
 ): Promise<void> => {
 	const userTechnologyRepository: Repository<UserTechnology> =
 		AppDataSource.getRepository(UserTechnology);
-	const userRepository: Repository<User> = AppDataSource.getRepository(User);
 
 	let findUserTech = await userTechnologyRepository.find({
 		where: {
@@ -47,6 +47,10 @@ export const removeUserTechnologiesService = async (
 	const filteredTechs = findBodyTechs.filter((elem: any) =>
 		userTechs.includes(elem)
 	);
+
+	if (filteredTechs.length == 0) {
+		throw new AppError("Essas tecnologias já foram removidas", 400);
+	}
 
 	await userTechnologyRepository
 		.createQueryBuilder()
