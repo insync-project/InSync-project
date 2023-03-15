@@ -1,5 +1,4 @@
-import { IUser } from "../../interfaces/users.interfaces";
-// alterar para um import válido quando existir um no código;
+import { Project } from "../../entities";
 
 declare global {
   namespace Express {
@@ -9,6 +8,7 @@ declare global {
         id: string | undefined;
         admin: boolean | undefined;
       };
+      projectInfos: Project;
     }
   }
 }

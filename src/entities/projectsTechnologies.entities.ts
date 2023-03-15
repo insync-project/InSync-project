@@ -1,4 +1,9 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import {
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 import { Technology } from "./technologies.entities";
 import { Project } from "./projects.entities";
 
@@ -7,11 +12,11 @@ export class ProjectTechnology {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: "date" })
-  createdAt: string;
+  @CreateDateColumn({ type: "date" })
+  addedAt: string;
 
   @ManyToOne(() => Project)
-  user: Project;
+  project: Project;
 
   @ManyToOne(() => Technology)
   technology: Technology;

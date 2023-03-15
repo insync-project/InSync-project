@@ -10,6 +10,7 @@ import {
 } from "typeorm";
 import { User } from "./users.entities";
 import { UserProjectTeam } from "./usersProjectsTeam.entities";
+import { ProjectTechnology } from "./projectsTechnologies.entities";
 
 export enum devTypeProjectRole {
   FRONT = "Front-end",
@@ -44,8 +45,11 @@ export class Project {
   @Column({ type: "enum", enum: devTypeProjectRole })
   devType: devTypeProjectRole;
 
-  @Column({ type: "varchar", length: "150" })
+  @Column({ type: "varchar", length: "150", nullable: true })
   cover?: string | null | undefined;
+
+  @Column({ type: "int" })
+  maxUsers: number;
 
   @CreateDateColumn({ type: "date" })
   createdAt: string;
@@ -60,8 +64,14 @@ export class Project {
   owner: User;
 
   @OneToMany(
+    () => ProjectTechnology,
+    (projectTechnology) => projectTechnology.project
+  )
+  projectTechnologies: ProjectTechnology[];
+
+  @OneToMany(
     () => UserProjectTeam,
     (userProjectTeam) => userProjectTeam.project
   )
-  team: UserProjectTeam;
+  team: UserProjectTeam[];
 }

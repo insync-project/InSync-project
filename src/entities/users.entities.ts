@@ -14,6 +14,8 @@ import {
 } from "typeorm";
 import { SocialMedia } from "./socialMedia.entities";
 import { Project } from "./projects.entities";
+import { UserTechnology } from "./usersTechnologies.entities";
+import { UserProjectTeam } from "./usersProjectsTeam.entities";
 
 @Entity("users")
 export class User {
@@ -33,12 +35,12 @@ export class User {
   password: string;
 
   @Column({ type: "boolean", default: false })
-  admin: boolean = false;
+  admin?: boolean = false;
 
   @Column({ type: "text", nullable: true })
   description?: string | null | undefined;
 
-  @Column({ type: "varchar", length: "150" })
+  @Column({ type: "varchar", length: "150", nullable: true })
   avatar?: string | null | undefined;
 
   @CreateDateColumn({ type: "date" })
@@ -54,8 +56,14 @@ export class User {
   @JoinColumn()
   socialMedia?: SocialMedia | null | undefined;
 
+  @OneToMany(() => UserTechnology, (userTechnology) => userTechnology.user)
+  userTechnologies: UserTechnology[];
+
   @OneToMany(() => Project, (project) => project.owner)
   project: Project[];
+
+  @OneToMany(() => UserProjectTeam, (userProjectTeam) => userProjectTeam.user)
+  userProjectTeam: UserProjectTeam[];
 
   @BeforeInsert()
   @BeforeUpdate()
