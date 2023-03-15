@@ -9,6 +9,7 @@ import {
 import { createUsersService } from "../services/users/createUsers.service";
 import { deleteUsersService } from "../services/users/deleteUsers.service";
 import { loginService } from "../services/users/loginUsers.service";
+import { retrieveProfileUsersByNicknameService } from "../services/users/retrieveProfileUserByNickname.service";
 import { retrieveProfileUsersService } from "../services/users/retrieveProfileUsers.service";
 import { updateUsersService } from "../services/users/updateUsers.service";
 
@@ -54,5 +55,13 @@ export const retrieveProfileUsersController = async (
   res: Response
 ): Promise<Response> => {
   const response = await retrieveProfileUsersService(req);
-  return res.status(201).json({ response });
+  return res.status(201).json({ ...response });
+};
+
+export const retrieveProfileUsersByNicknameController = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  const response = await retrieveProfileUsersByNicknameService(req);
+  return res.status(201).json({ ...response });
 };

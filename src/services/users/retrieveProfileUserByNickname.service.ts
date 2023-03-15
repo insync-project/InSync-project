@@ -3,10 +3,13 @@ import { AppDataSource } from "../../data-source";
 import { User } from "../../entities";
 import "dotenv/config";
 import { Request } from "express";
+import { AppError } from "../../errors";
 
-export const retrieveProfileUsersService = async (
+export const retrieveProfileUsersByNicknameService = async (
   req: Request
 ): Promise<any> => {
+  const nicknameParams = req.params.nickname;
+
   const usersRepository: Repository<User> = AppDataSource.getRepository(User);
 
   const userFind = await usersRepository
@@ -32,10 +35,13 @@ export const retrieveProfileUsersService = async (
       "userProjectTeamInfosProject.team",
       "userProjectTeamInfosProjectTeam"
     )
-    .where("user.id = :userId", {
-      userId: req.userTokenInfos.id,
+    .where("user.nickname = :nickname", {
+      nickname: nicknameParams,
     })
     .getOne();
 
+  if (!userFind) {
+    throw new AppError("Profile not found", 404);
+  }
   return userFind;
 };
