@@ -3,6 +3,7 @@ import {
   createUsersController,
   deleteUserController,
   loginUsersController,
+  retrieveProfileUsersByNicknameController,
   retrieveProfileUsersController,
   updateUsersController,
 } from "../controllers/users.controllers";
@@ -43,3 +44,5 @@ usersRoutes.get(
   tokenValidationMiddleware,
   retrieveProfileUsersController
 );
+
+usersRoutes.get("/profile/:nickname", retrieveProfileUsersByNicknameController);
