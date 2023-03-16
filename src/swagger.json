@@ -1,0 +1,98 @@
+{
+	"openapi": "3.0.0",
+	"info": {
+		"title": "inSync Project API",
+		"description": "Essa API contém informações sobre o projeto inSync",
+		"termsOfService": "http://localhost:3000/terms",
+		"contact": {
+			"email": "jeanhsouza@gmail.com"
+		},
+		"version": "1.0.0"
+	},
+	"servers": [
+		{
+			"url": "http://localhost:3000/",
+			"description": "Ambiente de Teste"
+		},
+		{
+			"url": "https://insync-api-v1-lnpi.onrender.com/",
+			"description": "Ambiente de Produção"
+		}
+	],
+	"paths": {
+		"/users": {
+			"post": {
+				"summary": "Cadastro de novo usuário",
+				"description": "Esta rota será responsável por criar um novo usuário",
+				"tags": ["Users"],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/User"
+							},
+							"examples": {
+								"user_default": {
+									"value": {
+										"name": "Gabriel1",
+										"email": "rf.gabriel1@gmail.com",
+										"nickname": "aeon1",
+										"password": "12345678",
+										"admin": false
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"409": {
+						"description": "Invalid Email or Invalid nickname"
+					},
+					"201": {
+						"description": "OK",
+						"content": {
+							"application/json": {
+								"schema": {
+                                    "type": "object",
+									"$ref": "#/components/schemas/User"
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"components": {
+		"schemas": {
+			"User": {
+				"type": "object",
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					},
+					"nickname": {
+						"type": "string"
+					},
+					"password": {
+						"type": "string"
+					},
+					"admin": {
+						"type": "boolean"
+					}
+				}
+			}
+		},
+        "securitySchemes":{
+            "bearerAuth":{
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+	}
+}
