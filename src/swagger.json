@@ -62,7 +62,52 @@
 					}
 				}
 			}
-		}
+		},
+        "/users/login":{
+            "post":{
+                "tags": ["Users"]
+            }
+        },
+        "/users/{id}":{
+            "delete":{"tags": ["Users"]},
+            "patch":{"tags": ["Users"]}
+        },
+        "/users/profile":{
+            "get":{"tags": ["Users"]}
+        },
+        "/users/profile/{nickname}":{
+            "get":{"tags": ["Users"]}
+        },
+        "/projects":{
+            "post":{"tags": ["Projects"]},
+            "get":{"tags": ["Projects"]}
+        },
+        "/projects/{projectId}":{
+            "patch":{"tags": ["Projects"]},
+            "delete":{"tags": ["Projects"]}
+        },
+        "/technologies":{
+            "post":{"tags": ["Technologies"]},
+            "get":{"tags": ["Technologies"]}
+        },
+        "/technologies/{techId}":{
+            "delete":{"tags": ["Technologies"]}
+        },
+        "/technologies/users":{
+            "post":{"tags": ["Technologies", "Users"]},
+            "delete":{"tags": ["Technologies", "Users"]}
+        },
+        "/technologies/projects/{projectId}":{
+            "post":{"tags": ["Technologies", "Projects"]},
+            "delete":{"tags": ["Technologies", "Projects"]}
+        },
+        "/teams/projects/{projectId}":{
+            "post":{"tags": ["Teams"]}
+        },
+        "/teams/{projectId}/users/{userId}":{
+            "put":{"tags": ["Teams"]},
+            "delete":{"tags": ["Teams"]}
+        }
 	},
 	"components": {
 		"schemas": {
@@ -83,6 +128,43 @@
 					},
 					"admin": {
 						"type": "boolean"
+					}
+				}
+			},
+            "Login": {
+				"type": "object",
+				"properties": {
+					"user": {
+						"type": "string"
+					},
+					"password": {
+						"type": "string"
+					}
+				}
+			},
+            "Project": {
+				"type": "object",
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+                    "description": {
+						"type": "string"
+					},
+                    "devType": {
+						"type": "string",
+                        "enum": ["Front-End", "Back-End", "Full-Stack"]                     
+					},
+                    "maxUsers": {
+						"type": "number"
+					}
+				}
+			},
+            "Tech": {
+				"type": "object",
+				"properties": {
+					"name": {
+						"type": "string"
 					}
 				}
 			}
