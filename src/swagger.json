@@ -54,7 +54,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-                                    "type": "object",
+									"type": "object",
 									"$ref": "#/components/schemas/User"
 								}
 							}
@@ -63,51 +63,336 @@
 				}
 			}
 		},
-        "/users/login":{
-            "post":{
-                "tags": ["Users"]
-            }
-        },
-        "/users/{id}":{
-            "delete":{"tags": ["Users"]},
-            "patch":{"tags": ["Users"]}
-        },
-        "/users/profile":{
-            "get":{"tags": ["Users"]}
-        },
-        "/users/profile/{nickname}":{
-            "get":{"tags": ["Users"]}
-        },
-        "/projects":{
-            "post":{"tags": ["Projects"]},
-            "get":{"tags": ["Projects"]}
-        },
-        "/projects/{projectId}":{
-            "patch":{"tags": ["Projects"]},
-            "delete":{"tags": ["Projects"]}
-        },
-        "/technologies":{
-            "post":{"tags": ["Technologies"]},
-            "get":{"tags": ["Technologies"]}
-        },
-        "/technologies/{techId}":{
-            "delete":{"tags": ["Technologies"]}
-        },
-        "/technologies/users":{
-            "post":{"tags": ["Technologies", "Users"]},
-            "delete":{"tags": ["Technologies", "Users"]}
-        },
-        "/technologies/projects/{projectId}":{
-            "post":{"tags": ["Technologies", "Projects"]},
-            "delete":{"tags": ["Technologies", "Projects"]}
-        },
-        "/teams/projects/{projectId}":{
-            "post":{"tags": ["Teams"]}
-        },
-        "/teams/{projectId}/users/{userId}":{
-            "put":{"tags": ["Teams"]},
-            "delete":{"tags": ["Teams"]}
-        }
+		"/users/login": {
+			"post": {
+				"summary": "Login de usuário cadastrado",
+				"description": "Esta rota será responsável por fazer o login de um usuário cadastrado",
+				"tags": ["Users"],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/Login"
+							},
+							"examples": {
+								"user_default": {
+									"value": {
+										"user": "aeon1",
+										"password": "12345678"
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"401": {
+						"description": "Invalid credentials"
+					},
+					"200": {
+						"description": "OK",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"token": {
+											"type": "string"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/users/{id}": {
+			"delete": {
+				"summary": "Deletar um usuário cadastrado",
+				"description": "Esta rota será responsável por fazer um soft delete de um usuário cadastrado",
+				"tags": ["Users"],
+				"security": [{ "bearerAuth": [] }],
+				"parameters": [{
+					"name": "id",
+					"in": "path",
+					"description": "Nome do ID do usuário",
+					"required": true
+				}],
+				"responses": {
+					"401": {
+						"description": "Missing bearer token"
+					},
+					"403": {
+						"description": "Insufficient permission"
+					},
+					"404": {
+						"description": "User not found"
+					},
+					"204": {
+						"description": "OK"
+					}
+				}
+			},
+			"patch": {
+				"summary": "Altera dados de um usuário cadastrado",
+				"description": "Esta rota será responsável por alterar dados de um usuário cadastrado",
+				"tags": ["Users"],
+				"security": [{ "bearerAuth": [] }],
+				"parameters": [{
+					"name": "id",
+					"in": "path",
+					"description": "Nome do ID do usuário",
+					"required": true
+				}],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/User"
+							},
+							"examples": {
+								"user_default": {
+									"value": {
+										"name": "Antonio Santos",
+										"socialMedia": {
+											"github": "https://github.com/AntonioSantosBJPE",
+											"linkedln": "https://www.linkedin.com/in/antonio-santos-bjpe/"
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"401": {
+						"description": "Missing bearer token"
+					},
+					"403": {
+						"description": "Insufficient permission"
+					},
+					"404": {
+						"description": "User not found"
+					},
+					"200": {
+						"description": "OK",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"$ref": "#/components/schemas/User"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/users/profile": {
+			"get": {
+				"summary": "Pegar dados de um usuário logado",
+				"description": "Esta rota será responsável por pegar os dados de usuário logado",
+				"tags": ["Users"],
+				"security": [{ "bearerAuth": [] }],
+				"responses": {
+					"401": {
+						"description": "Missing bearer token"
+					},
+					"200": {
+						"description": "OK",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"$ref": "#/components/schemas/User"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/users/profile/{nickname}": {
+			"get": {
+				"summary": "Pegar dados de um usuário cadastrado pelo nickname",
+				"description": "Esta rota será responsável por pegar dados de um usuário cadastrado pelo nickname informado",
+				"tags": ["Users"],
+				"parameters": [{
+					"name": "nickname",
+					"in": "path",
+					"description": "Nickname do usuário",
+					"required": true
+				}],
+				"responses": {
+					"401": {
+						"description": "Missing bearer token"
+					},
+					"404": {
+						"description": "User not found"
+					},
+					"200": {
+						"description": "OK",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"$ref": "#/components/schemas/User"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/projects": {
+			"post": {
+				"summary": "Criar um novo projeto",
+				"description": "Esta rota será responsável por criar de um novo projeto",
+				"tags": ["Projects"],
+				"security": [{ "bearerAuth": [] }]
+			},
+			"get": {
+				"summary": "Pegar todos os projetos cadastrados",
+				"description": "Esta rota será responsável por pegar todos os projetos cadastrados",
+				"tags": ["Projects"]
+			}
+		},
+		"/projects/{projectId}": {
+			"get": {
+				"summary": "Pegar projeto cadastrado pelo ID",
+				"description": "Esta rota será responsável por pegar apenas um projeto cadastrado pelo ID",
+				"tags": ["Projects"],
+				"security": [{ "bearerAuth": [] }],
+				"parameters": [{
+					"name": "projectId",
+					"in": "path",
+					"description": "Número do ID do projeto",
+					"required": true
+				}],
+				"responses": {
+					"401": {
+						"description": "Missing bearer token"
+					},
+					"403": {
+						"description": "Insufficient permission"
+					},
+					"404": {
+						"description": "Project not found"
+					},
+					"200": {
+						"description": "OK",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"$ref": "#/components/schemas/Project"
+								}
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"summary": "Deletar um projeto cadastrado",
+				"description": "Esta rota será responsável por deletar de um projeto cadastrado",
+				"tags": ["Projects"],
+				"security": [{ "bearerAuth": [] }],
+				"parameters": [{
+					"name": "projectId",
+					"in": "path",
+					"description": "Número do ID do projeto",
+					"required": true
+				}],
+				"responses": {
+					"401": {
+						"description": "Missing bearer token"
+					},
+					"403": {
+						"description": "Insufficient permission"
+					},
+					"404": {
+						"description": "Project not found"
+					},
+					"204": {
+						"description": "OK"
+					}
+				}
+			},
+			"patch": {
+				"summary": "Altera dados de um projeto cadastrado",
+				"description": "Esta rota será responsável por alterar dados de um projeto cadastrado",
+				"tags": ["Projects"],
+				"security": [{ "bearerAuth": [] }],
+				"parameters": [{
+					"name": "projectId",
+					"in": "path",
+					"description": "Número do ID do projeto",
+					"required": true
+				}],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/Project"
+							},
+							"examples": {
+								"user_default": {
+									"value": {
+										"name": "Pequeno maluco",
+										"status": "Finalizado"
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"responses": {
+				"401": {
+					"description": "Missing bearer token"
+				},
+				"403": {
+					"description": "Insufficient permission"
+				},
+				"404": {
+					"description": "User not found"
+				},
+				"200": {
+					"description": "OK",
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"$ref": "#/components/schemas/Project"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/technologies": {
+			"post": { "tags": ["Technologies"] },
+			"get": { "tags": ["Technologies"] }
+		},
+		"/technologies/{techId}": {
+			"delete": { "tags": ["Technologies"] }
+		},
+		"/technologies/users": {
+			"post": { "tags": ["Technologies", "Users"] },
+			"delete": { "tags": ["Technologies", "Users"] }
+		},
+		"/technologies/projects/{projectId}": {
+			"post": { "tags": ["Technologies", "Projects"] },
+			"delete": { "tags": ["Technologies", "Projects"] }
+		},
+		"/teams/projects/{projectId}": {
+			"post": { "tags": ["Teams"] }
+		},
+		"/teams/{projectId}/users/{userId}": {
+			"put": { "tags": ["Teams"] },
+			"delete": { "tags": ["Teams"] }
+		}
 	},
 	"components": {
 		"schemas": {
@@ -131,7 +416,7 @@
 					}
 				}
 			},
-            "Login": {
+			"Login": {
 				"type": "object",
 				"properties": {
 					"user": {
@@ -142,25 +427,25 @@
 					}
 				}
 			},
-            "Project": {
+			"Project": {
 				"type": "object",
 				"properties": {
 					"name": {
 						"type": "string"
 					},
-                    "description": {
+					"description": {
 						"type": "string"
 					},
-                    "devType": {
+					"devType": {
 						"type": "string",
-                        "enum": ["Front-End", "Back-End", "Full-Stack"]                     
+						"enum": ["Front-End", "Back-End", "Full-Stack"]
 					},
-                    "maxUsers": {
+					"maxUsers": {
 						"type": "number"
 					}
 				}
 			},
-            "Tech": {
+			"Tech": {
 				"type": "object",
 				"properties": {
 					"name": {
@@ -169,12 +454,12 @@
 				}
 			}
 		},
-        "securitySchemes":{
-            "bearerAuth":{
-                "type": "http",
-                "scheme": "bearer",
-                "bearerFormat": "JWT"
-            }
-        }
+		"securitySchemes": {
+			"bearerAuth": {
+				"type": "http",
+				"scheme": "bearer",
+				"bearerFormat": "JWT"
+			}
+		}
 	}
 }

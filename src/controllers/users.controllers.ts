@@ -55,7 +55,7 @@ export const retrieveProfileUsersController = async (
   res: Response
 ): Promise<Response> => {
   const response = await retrieveProfileUsersService(req);
-  return res.status(201).json({ ...response });
+  return res.status(200).json({ ...response });
 };
 
 export const retrieveProfileUsersByNicknameController = async (
@@ -63,5 +63,5 @@ export const retrieveProfileUsersByNicknameController = async (
   res: Response
 ): Promise<Response> => {
   const response = await retrieveProfileUsersByNicknameService(req);
-  return res.status(201).json({ ...response });
+  return res.status(200).json({ ...response });
 };
