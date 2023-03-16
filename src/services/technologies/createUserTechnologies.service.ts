@@ -2,73 +2,97 @@ import { AppDataSource } from "../../data-source";
 import { Technology, User, UserTechnology } from "../../entities";
 import { Repository } from "typeorm";
 import { AppError } from "../../errors";
+import { returnProjectsTechnolgies } from "../../schemas/projects.schemas";
 
 export const createUserTechnologiesService = async (
-	technologies: any,
-	userId: number
+  technologies: string[],
+  userId: number
 ): Promise<any> => {
-	const userTechnologyRepository: Repository<UserTechnology> =
-		AppDataSource.getRepository(UserTechnology);
-	const userRepository: Repository<User> = AppDataSource.getRepository(User);
-	const technologyRepository: Repository<Technology> =
-		AppDataSource.getRepository(Technology);
+  if (technologies.length === 0) {
+    throw new AppError("It is necessary to send at lest one technology", 400);
+  }
 
-	let findUserTech = await userTechnologyRepository.find({
-		where: {
-			user: {
-				id: userId,
-			},
-		},
-		relations: {
-			technology: true,
-		},
-	});
+  const userTechnologyRepository: Repository<UserTechnology> =
+    AppDataSource.getRepository(UserTechnology);
+  const userRepository: Repository<User> = AppDataSource.getRepository(User);
+  const technologyRepository: Repository<Technology> =
+    AppDataSource.getRepository(Technology);
 
-	let arrUserTech: any = [];
+  let findUserTech = await userTechnologyRepository.find({
+    where: {
+      user: {
+        id: userId,
+      },
+    },
+    relations: {
+      technology: true,
+    },
+  });
 
-	const userTechs = findUserTech.map((tech) => {
-		arrUserTech.push(tech.technology.name);
-	});
+  const arrUserTech = findUserTech.map((tech) => {
+    return tech.technology.name;
+  });
 
-	const filteredTechs = technologies.filter((elem: any) => !arrUserTech.includes(elem));
+  const filteredTechs = technologies.filter(
+    (elem: string) => !arrUserTech.includes(elem)
+  );
 
-	if (filteredTechs.length == 0) {
-		throw new AppError("Essas tecnologias já foram adicionadas", 400);
-	}
+  if (filteredTechs.length === 0) {
+    throw new AppError("These technologies have already been added", 400);
+  }
 
-	const findUser = await userRepository.findOne({
-		where: {
-			id: userId,
-		},
-	});
+  const findUser = await userRepository.findOne({
+    where: {
+      id: userId,
+    },
+  });
 
-	let findTech = await technologyRepository.find();
+  let findTech = await technologyRepository.find();
 
-	let arrayFind: any = [];
+  filteredTechs.forEach((element) => {
+    let exists = false;
+    findTech.forEach((tech) => {
+      if (tech.name === element) {
+        exists = true;
+      }
+    });
+    if (exists === false) {
+      throw new AppError(`${element} is not a valid technology`, 400);
+    }
+  });
 
-	findTech.forEach((tech: any) => {
-		if (filteredTechs.includes(tech.name)) {
-			arrayFind.push({ user: findUser, technology: tech });
-		}
-	});
+  let userTechsFind: {
+    user: User;
+    technology: Technology;
+  }[] = [];
 
-	await userTechnologyRepository
-		.createQueryBuilder()
-		.insert()
-		.values(arrayFind)
-		.returning("*")
-		.execute();
+  findTech.forEach((tech) => {
+    if (filteredTechs.includes(tech.name)) {
+      userTechsFind.push({ user: findUser!, technology: tech });
+    }
+  });
 
-	const newFindUser = await userRepository.findOne({
-		where: {
-			id: userId,
-		},
-		relations: {
-			userTechnologies: {
-				technology: true,
-			},
-		},
-	});
+  await userTechnologyRepository
+    .createQueryBuilder()
+    .insert()
+    .values(userTechsFind)
+    .returning("*")
+    .execute();
 
-	return newFindUser;
+  const newFindUser = await userRepository.findOne({
+    where: {
+      id: userId,
+    },
+    relations: {
+      userTechnologies: {
+        technology: true,
+      },
+    },
+  });
+
+  const resultProject = returnProjectsTechnolgies.parse(
+    newFindUser?.userTechnologies
+  );
+
+  return resultProject;
 };

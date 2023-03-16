@@ -16,7 +16,7 @@ export const validateUniqueRegisterMiddleware = async (
       where: [{ email: req.body.email }, { nickname: req.body.nickname }],
       withDeleted: true,
     });
-    console.log(registerToValidate);
+
     if (registerToValidate) {
       if (registerToValidate.email === req.body.email) {
         throw new AppError("Invalid Email", 409);

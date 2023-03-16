@@ -1,91 +1,104 @@
 import { AppDataSource } from "../../data-source";
-import {
-	Project,
-	ProjectTechnology,
-	Technology,
-	User,
-	UserTechnology,
-} from "../../entities";
+import { Project, ProjectTechnology, Technology } from "../../entities";
 import { Repository } from "typeorm";
 import { AppError } from "../../errors";
+import { returnProjectsTechnolgies } from "../../schemas/projects.schemas";
 
 export const createProjectTechnologiesService = async (
-	technologies: any,
-	project: any,
-	projectId: number
+  technologies: string[],
+  project: Project,
+  projectId: number
 ): Promise<any> => {
-	const projectTechnologyRepository: Repository<ProjectTechnology> =
-		AppDataSource.getRepository(ProjectTechnology);
-	const projectRepository: Repository<Project> =
-		AppDataSource.getRepository(Project);
-	const technologyRepository: Repository<Technology> =
-		AppDataSource.getRepository(Technology);
+  if (technologies.length === 0) {
+    throw new AppError("It is necessary to send at lest one technology", 400);
+  }
 
-	if (project.status === "Finalizado") {
-		throw new AppError("Unable to make changes to a finished project!", 400);
-	}
+  const projectTechnologyRepository: Repository<ProjectTechnology> =
+    AppDataSource.getRepository(ProjectTechnology);
+  const projectRepository: Repository<Project> =
+    AppDataSource.getRepository(Project);
+  const technologyRepository: Repository<Technology> =
+    AppDataSource.getRepository(Technology);
 
-	let findProjectTech = await projectTechnologyRepository.find({
-		where: {
-			project: {
-				id: projectId,
-			},
-		},
-		relations: {
-			technology: true,
-		},
-	});
+  if (project.status === "Finalizado") {
+    throw new AppError("Unable to make changes to a finished project!", 400);
+  }
 
-	let arrProjectTech: any = [];
+  let findProjectTech = await projectTechnologyRepository.find({
+    where: {
+      project: {
+        id: projectId,
+      },
+    },
+    relations: {
+      technology: true,
+    },
+  });
 
-	const ProjectTechs = findProjectTech.map((tech) => {
-		arrProjectTech.push(tech.technology.name);
-	});
+  const arrProjectTech = findProjectTech.map((tech) => {
+    return tech.technology.name;
+  });
 
-	const filteredTechs = technologies.filter(
-		(elem: any) => !arrProjectTech.includes(elem)
-	);
+  const filteredTechs = technologies.filter(
+    (elem: string) => !arrProjectTech.includes(elem)
+  );
 
-	if (filteredTechs.length == 0) {
-		throw new AppError(
-			"Essas tecnologias já foram adicionadas a esse projeto",
-			400
-		);
-	}
+  if (filteredTechs.length === 0) {
+    throw new AppError("These technologies have already been added", 400);
+  }
 
-	const findProject = await projectRepository.findOne({
-		where: {
-			id: projectId,
-		},
-	});
+  const findProject = await projectRepository.findOne({
+    where: {
+      id: projectId,
+    },
+  });
 
-	let findTech = await technologyRepository.find();
+  let findTech = await technologyRepository.find();
 
-	let arrayFind: any = [];
+  filteredTechs.forEach((element) => {
+    let exists = false;
+    findTech.forEach((tech) => {
+      if (tech.name === element) {
+        exists = true;
+      }
+    });
+    if (exists === false) {
+      throw new AppError(`${element} is not a valid technology`, 400);
+    }
+  });
 
-	findTech.forEach((tech: any) => {
-		if (filteredTechs.includes(tech.name)) {
-			arrayFind.push({ project: findProject, technology: tech });
-		}
-	});
+  let projectTechsFind: {
+    project: Project;
+    technology: Technology;
+  }[] = [];
 
-	await projectTechnologyRepository
-		.createQueryBuilder()
-		.insert()
-		.values(arrayFind)
-		.returning("*")
-		.execute();
+  findTech.forEach((tech) => {
+    if (filteredTechs.includes(tech.name)) {
+      projectTechsFind.push({ project: findProject!, technology: tech });
+    }
+  });
 
-	const newFindProject = await projectRepository.findOne({
-		where: {
-			id: projectId,
-		},
-		relations: {
-			projectTechnologies: {
-				technology: true,
-			},
-		},
-	});
+  await projectTechnologyRepository
+    .createQueryBuilder()
+    .insert()
+    .values(projectTechsFind)
+    .returning("*")
+    .execute();
 
-	return newFindProject;
+  const newFindProject = await projectRepository.findOne({
+    where: {
+      id: projectId,
+    },
+    relations: {
+      projectTechnologies: {
+        technology: true,
+      },
+    },
+  });
+
+  const resultProject = returnProjectsTechnolgies.parse(
+    newFindProject?.projectTechnologies
+  );
+
+  return resultProject;
 };

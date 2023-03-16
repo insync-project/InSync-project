@@ -5,7 +5,7 @@ import { AppError } from "../../errors";
 
 export const allowUserTeamsProjectsService = async (
   req: Request
-): Promise<{ message: string }> => {
+): Promise<string> => {
   const projectTeamRepo = AppDataSource.getRepository(UserProjectTeam);
 
   const findProjectTeamRepo = await projectTeamRepo.findOne({
@@ -59,5 +59,5 @@ export const allowUserTeamsProjectsService = async (
     })
     .execute();
 
-  return { message: "User added successfully!" };
+  return "User added successfully!";
 };

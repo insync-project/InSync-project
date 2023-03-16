@@ -34,7 +34,9 @@ export const updateProjectsService = async (
         technology: true,
       },
       owner: true,
-      team: true,
+      team: {
+        user: true,
+      },
     },
   });
 
