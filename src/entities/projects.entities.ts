@@ -36,14 +36,13 @@ export class Project {
   description: string;
 
   @Column({
-    type: "enum",
-    enum: statusProjectRole,
-    default: statusProjectRole.OPEN,
+    type: "varchar",
+    default: "Aberto",
   })
-  status: statusProjectRole = statusProjectRole.OPEN;
+  status: string = "Aberto";
 
-  @Column({ type: "enum", enum: devTypeProjectRole })
-  devType: devTypeProjectRole;
+  @Column({ type: "varchar" })
+  devType: string;
 
   @Column({ type: "varchar", length: "150", nullable: true })
   cover?: string | null | undefined;
