@@ -3,7 +3,9 @@ import { AppDataSource } from "../../data-source";
 import { Project, User, UserProjectTeam } from "../../entities";
 import { AppError } from "../../errors";
 
-export const addTeamsProjectsService = async (req: Request): Promise<any> => {
+export const addTeamsProjectsService = async (
+  req: Request
+): Promise<string> => {
   const projectsRepo = AppDataSource.getRepository(Project);
   const usersRepo = AppDataSource.getRepository(User);
   const teamsProject = AppDataSource.getRepository(UserProjectTeam);
@@ -59,5 +61,5 @@ export const addTeamsProjectsService = async (req: Request): Promise<any> => {
 
   await teamsProject.save(newRequestTeam);
 
-  return { message: "Request sent successfully" };
+  return "Request sent successfully";
 };

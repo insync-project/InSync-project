@@ -47,7 +47,7 @@ export const updateUsersController = async (
 ): Promise<Response> => {
   const body: IUpdateUser = req.body;
   const response = await updateUsersService(req, body);
-  return res.status(200).json({ ...response });
+  return res.status(200).json({ message: response });
 };
 
 export const retrieveProfileUsersController = async (

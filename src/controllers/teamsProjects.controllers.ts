@@ -10,7 +10,7 @@ export const addTeamsProjectsControllers = async (
 ): Promise<Response> => {
   const addedTeams = await addTeamsProjectsService(req);
 
-  return res.status(201).json(addedTeams);
+  return res.status(201).json({ message: addedTeams });
 };
 
 export const allowUserTeamsProjectsControllers = async (
@@ -19,7 +19,7 @@ export const allowUserTeamsProjectsControllers = async (
 ): Promise<Response> => {
   const updatedTeams = await allowUserTeamsProjectsService(req);
 
-  return res.status(200).json(updatedTeams);
+  return res.status(200).json({ message: updatedTeams });
 };
 
 export const removeUserTeamsProjectsControllers = async (
