@@ -75,7 +75,7 @@ export const removeUserTechnologiesController = async (
   request: Request,
   response: Response
 ): Promise<Response> => {
-  const technologies = request.body.techs;
+  const technologies: string[] = request.body.techs;
   const userId: number = parseInt(request.userTokenInfos.id!);
 
   await removeUserTechnologiesService(technologies, userId);
@@ -87,7 +87,7 @@ export const removeProjectTechnologiesController = async (
   request: Request,
   response: Response
 ) => {
-  const technologies = request.body.techs;
+  const technologies: string[] = request.body.techs;
   const project = request.projectInfos;
   const projectId = parseInt(request.params.projectId!);
 

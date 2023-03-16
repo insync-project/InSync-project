@@ -37,6 +37,7 @@ technologiesRoutes.post(
 technologiesRoutes.delete(
   "/users",
   tokenValidationMiddleware,
+  validateBodyMiddleware(addTechSchema),
   removeUserTechnologiesController
 );
 
@@ -44,6 +45,7 @@ technologiesRoutes.delete(
   "/projects/:projectId",
   tokenValidationMiddleware,
   validateProjectMiddleware,
+  validateBodyMiddleware(addTechSchema),
   removeProjectTechnologiesController
 );
 

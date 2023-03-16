@@ -4,57 +4,45 @@ import { In, Repository } from "typeorm";
 import { AppError } from "../../errors";
 
 export const removeUserTechnologiesService = async (
-	technologies: any,
-	userId: number
+  technologies: string[],
+  userId: number
 ): Promise<void> => {
-	const userTechnologyRepository: Repository<UserTechnology> =
-		AppDataSource.getRepository(UserTechnology);
+  if (technologies.length === 0) {
+    throw new AppError("It is necessary to send at lest one technology", 400);
+  }
 
-	let findUserTech = await userTechnologyRepository.find({
-		where: {
-			user: {
-				id: userId,
-			},
-		},
-		relations: {
-			technology: true,
-		},
-	});
+  const userTechnologyRepository: Repository<UserTechnology> =
+    AppDataSource.getRepository(UserTechnology);
 
-	const userTechs = findUserTech.map((tech) => {
-		return tech.id;
-	});
+  let findUserTech = await userTechnologyRepository.find({
+    where: {
+      user: {
+        id: userId,
+      },
+    },
+    relations: {
+      technology: true,
+    },
+  });
 
-	const findBodyTechs = await Promise.all(
-		technologies.map(async (techs: any) => {
-			let findUserTechByName = await userTechnologyRepository.findOne({
-				where: {
-					technology: {
-						name: techs,
-					},
-					user: {
-						id: userId,
-					},
-				},
-			});
+  const techsIdDelete: number[] = [];
 
-			if (findUserTechByName) {
-				return findUserTechByName.id;
-			}
-		})
-	);
+  technologies.forEach((tech) => {
+    let exists = false;
+    findUserTech.forEach((userTech) => {
+      if (userTech.technology.name === tech) {
+        exists = true;
+        techsIdDelete.push(userTech.id);
+      }
+    });
+    if (exists === false) {
+      throw new AppError(`User does not have the technology: ${tech}`, 400);
+    }
+  });
 
-	const filteredTechs = findBodyTechs.filter((elem: any) =>
-		userTechs.includes(elem)
-	);
-
-	if (filteredTechs.length == 0) {
-		throw new AppError("Essas tecnologias já foram removidas", 400);
-	}
-
-	await userTechnologyRepository
-		.createQueryBuilder()
-		.delete()
-		.where({ id: In(filteredTechs) })
-		.execute();
+  await userTechnologyRepository
+    .createQueryBuilder()
+    .delete()
+    .where({ id: In(techsIdDelete) })
+    .execute();
 };
