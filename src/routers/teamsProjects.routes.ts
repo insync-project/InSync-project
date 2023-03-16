@@ -6,6 +6,7 @@ import {
   ownUserRemoveTeamsProjectsControllers,
   removeUserTeamsProjectsControllers,
 } from "../controllers/teamsProjects.controllers";
+import { validateProjectMiddleware } from "../middlewares/projects/validProject.middleware";
 
 export const teamsRoutes: Router = Router();
 
@@ -18,6 +19,7 @@ teamsRoutes.post(
 teamsRoutes.put(
   "/:projectId/users/:userId",
   tokenValidationMiddleware,
+  validateProjectMiddleware,
   allowUserTeamsProjectsControllers
 );
 
@@ -27,8 +29,8 @@ teamsRoutes.delete(
   removeUserTeamsProjectsControllers
 );
 
-teamsRoutes.delete(
-  "/:projectId/users",
-  tokenValidationMiddleware,
-  ownUserRemoveTeamsProjectsControllers
-);
+// teamsRoutes.delete(
+//   "/:projectId/users",
+//   tokenValidationMiddleware,
+//   ownUserRemoveTeamsProjectsControllers
+// );
