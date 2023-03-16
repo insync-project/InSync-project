@@ -10,6 +10,10 @@ export const validateProjectMiddleware = async (
 ): Promise<void> => {
   const projectRepo = AppDataSource.getRepository(Project);
 
+  if (isNaN(Number(req.params.projectId))) {
+    throw new AppError("Project not found!", 404);
+  }
+
   const project: Project | null = await projectRepo.findOne({
     where: {
       id: Number(req.params.projectId),

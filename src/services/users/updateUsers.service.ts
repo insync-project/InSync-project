@@ -4,12 +4,11 @@ import { AppDataSource } from "../../data-source";
 import { SocialMedia, User } from "../../entities";
 import { AppError } from "../../errors";
 import { IReturnUser, IUpdateUser } from "../../interfaces/users.interfaces";
-import { returnFullCreateUserSchema } from "../../schemas/users.schemas";
 
 export const updateUsersService = async (
   req: Request,
   body: IUpdateUser
-): Promise<IReturnUser> => {
+): Promise<string> => {
   const tokeninfos = req.userTokenInfos;
   const idParams: string = req.params.id;
   if (isNaN(Number(idParams))) {
@@ -38,9 +37,7 @@ export const updateUsersService = async (
     ...body.socialMedia,
   });
 
-  const updateSocialMedia: SocialMedia = await socialMediaRepository.save(
-    createSocialMedia
-  );
+  await socialMediaRepository.save(createSocialMedia);
 
   const createUser: User = userRepository.create({
     ...userFind,
@@ -50,21 +47,7 @@ export const updateUsersService = async (
     avatar: body.avatar ? body.avatar : userFind?.avatar!,
   });
 
-  const updateUser: User = await userRepository.save(createUser);
+  await userRepository.save(createUser);
 
-  const responseUser: User | null = await userRepository.findOne({
-    where: {
-      id: Number(idParams),
-    },
-    relations: {
-      userTechnologies: {
-        technology: true,
-      },
-      socialMedia: true,
-      project: true,
-    },
-  });
-
-  const response = returnFullCreateUserSchema.parse(responseUser);
-  return response;
+  return "User updated successfully!";
 };

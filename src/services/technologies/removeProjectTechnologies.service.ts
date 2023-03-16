@@ -4,62 +4,50 @@ import { In, Repository } from "typeorm";
 import { AppError } from "../../errors";
 
 export const removeProjectTechnologiesService = async (
-	technologies: any,
-	project: any,
-	projectId: number
+  technologies: string[],
+  project: Project,
+  projectId: number
 ): Promise<void> => {
-	const projectTechnologyRepository: Repository<ProjectTechnology> =
-		AppDataSource.getRepository(ProjectTechnology);
+  if (technologies.length === 0) {
+    throw new AppError("It is necessary to send at lest one technology", 400);
+  }
 
-	if (project.status === "Finalizado") {
-		throw new AppError("Unable to make changes to a finished project!", 400);
-	}
+  const projectTechnologyRepository: Repository<ProjectTechnology> =
+    AppDataSource.getRepository(ProjectTechnology);
 
-	let findProjectTech = await projectTechnologyRepository.find({
-		where: {
-			project: {
-				id: projectId,
-			},
-		},
-		relations: {
-			technology: true,
-		},
-	});
+  if (project.status === "Finalizado") {
+    throw new AppError("Unable to make changes to a finished project!", 400);
+  }
 
-	const projectTechs = findProjectTech.map((tech) => {
-		return tech.id;
-	});
+  let findProjectTech = await projectTechnologyRepository.find({
+    where: {
+      project: {
+        id: projectId,
+      },
+    },
+    relations: {
+      technology: true,
+    },
+  });
 
-	const findBodyTechs = await Promise.all(
-		technologies.map(async (techs: any) => {
-			let findProjectTechByName = await projectTechnologyRepository.findOne({
-				where: {
-					technology: {
-						name: techs,
-					},
-					project: {
-						id: projectId,
-					},
-				},
-			});
+  const techsIdDelete: number[] = [];
 
-			if (findProjectTechByName) {
-				return findProjectTechByName.id;
-			}
-		})
-	);
+  technologies.forEach((tech) => {
+    let exists = false;
+    findProjectTech.forEach((userTech) => {
+      if (userTech.technology.name === tech) {
+        exists = true;
+        techsIdDelete.push(userTech.id);
+      }
+    });
+    if (exists === false) {
+      throw new AppError(`Project does not have the technology: ${tech}`, 400);
+    }
+  });
 
-	const filteredTechs = findBodyTechs.filter((elem: any) =>
-		projectTechs.includes(elem)
-	);
-
-	if (filteredTechs.length == 0) {
-		throw new AppError("Essas tecnologias já foram removidas", 400);
-	}
-
-	await projectTechnologyRepository
-		.createQueryBuilder()
-		.delete()
-		.where({ id: In(filteredTechs) })
-		.execute();
+  await projectTechnologyRepository
+    .createQueryBuilder()
+    .delete()
+    .where({ id: In(techsIdDelete) })
+    .execute();
 };

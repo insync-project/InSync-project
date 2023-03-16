@@ -4,10 +4,12 @@ import { User } from "../../entities";
 import "dotenv/config";
 import { Request } from "express";
 import { AppError } from "../../errors";
+import { returnUserProfile } from "../../schemas/users.schemas";
+import { iReturnUserByNickname } from "../../interfaces/users.interfaces";
 
 export const retrieveProfileUsersByNicknameService = async (
   req: Request
-): Promise<any> => {
+): Promise<iReturnUserByNickname> => {
   const nicknameParams = req.params.nickname;
 
   const usersRepository: Repository<User> = AppDataSource.getRepository(User);
@@ -18,7 +20,8 @@ export const retrieveProfileUsersByNicknameService = async (
     .leftJoinAndSelect("user.userTechnologies", "userTechnologies")
     .leftJoinAndSelect("userTechnologies.technology", "userTechnology")
     .leftJoinAndSelect("user.project", "project")
-    .leftJoinAndSelect("project.owner", "owner")
+    .leftJoinAndSelect("project.team", "team")
+    .leftJoinAndSelect("team.user", "userTeam")
     .leftJoinAndSelect("project.projectTechnologies", "projectTechnologies")
     .leftJoinAndSelect("projectTechnologies.technology", "technology")
     .leftJoinAndSelect("user.userProjectTeam", "userProjectTeam")
@@ -26,14 +29,6 @@ export const retrieveProfileUsersByNicknameService = async (
     .leftJoinAndSelect(
       "userProjectTeamInfosProject.owner",
       "userProjectTeamInfosProjectOwner"
-    )
-    .leftJoinAndSelect(
-      "userProjectTeamInfosProject.projectTechnologies",
-      "userProjectTeamInfosProjectProjectTechnologies"
-    )
-    .leftJoinAndSelect(
-      "userProjectTeamInfosProject.team",
-      "userProjectTeamInfosProjectTeam"
     )
     .where("user.nickname = :nickname", {
       nickname: nicknameParams,
@@ -43,5 +38,8 @@ export const retrieveProfileUsersByNicknameService = async (
   if (!userFind) {
     throw new AppError("Profile not found", 404);
   }
-  return userFind;
+
+  const returnNewProfileUser = returnUserProfile.parse(userFind);
+
+  return returnNewProfileUser;
 };

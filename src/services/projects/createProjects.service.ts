@@ -17,9 +17,13 @@ export const createProjectsService = async (
   const projectQuery = await projectRepo
     .createQueryBuilder("projects")
     .where("projects.ownerId = :id", { id: Number(userId) })
+    .andWhere("projects.status != :status", { status: "Finalizado" })
     .getOne();
 
-  if (projectQuery?.status === "Aberto") {
+  if (
+    projectQuery?.status === "Aberto" ||
+    projectQuery?.status === "Em andamento"
+  ) {
     throw new AppError(`finalize your ${projectQuery.name} project`, 409);
   }
 

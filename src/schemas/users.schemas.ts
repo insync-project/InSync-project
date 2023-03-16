@@ -1,5 +1,8 @@
 import { z } from "zod";
-import { projectsSchemas } from "./projects.schemas";
+import {
+  projectsCreateReturnSchema,
+  projectsSchemas,
+} from "./projects.schemas";
 
 export const createUserSchema = z.object({
   name: z.string().max(50),
@@ -34,18 +37,6 @@ export const returnCreateUser = z.object({
   deletedAt: z.string().nullable(),
 });
 
-export const returnFullCreateUserSchema = returnCreateUser
-  .extend({
-    socialMedia: returnSocialMedia.omit({
-      id: true,
-      createdAt: true,
-      updatedAt: true,
-      deletedAt: true,
-    }),
-    project: projectsSchemas.omit({ deletedAt: true }).array(),
-  })
-  .omit({ admin: true, createdAt: true, updatedAt: true, deletedAt: true });
-
 export const userLoginSchema = z.object({
   user: z.string(),
   password: z.string(),
@@ -77,3 +68,60 @@ export const updateUserNoSocialMediaSchema = updateUserSchema
     socialMedia: true,
   })
   .required();
+
+export const returnFullCreateUserSchema = returnCreateUser
+  .extend({
+    socialMedia: returnSocialMedia.omit({
+      id: true,
+      createdAt: true,
+      updatedAt: true,
+      deletedAt: true,
+    }),
+    project: projectsSchemas.omit({ deletedAt: true }).array(),
+  })
+  .omit({ admin: true, createdAt: true, updatedAt: true, deletedAt: true });
+
+export const returnTechnologySchema = z.object({
+  name: z.string().max(30),
+  id: z.number(),
+});
+
+export const returnProjectsTechnolgies = z
+  .object({
+    id: z.number(),
+    addedAt: z.string(),
+    technology: returnTechnologySchema,
+  })
+  .array();
+
+export const returnUserProfile = returnCreateUser
+  .omit({
+    admin: true,
+    deletedAt: true,
+  })
+  .extend({
+    socialMedia: returnSocialMedia.omit({
+      id: true,
+      createdAt: true,
+      updatedAt: true,
+      deletedAt: true,
+    }),
+    userTechnologies: returnProjectsTechnolgies,
+    project: projectsCreateReturnSchema
+      .omit({
+        owner: true,
+      })
+      .array(),
+    userProjectTeam: z
+      .object({
+        waiting: z.boolean(),
+        id: z.number().positive().int(),
+        addedAt: z.string(),
+        updatedAt: z.string(),
+        project: projectsCreateReturnSchema.omit({
+          team: true,
+          projectTechnologies: true,
+        }),
+      })
+      .array(),
+  });

@@ -3,10 +3,12 @@ import { AppDataSource } from "../../data-source";
 import { User } from "../../entities";
 import "dotenv/config";
 import { Request } from "express";
+import { returnUserProfile } from "../../schemas/users.schemas";
+import { iReturnUserByNickname } from "../../interfaces/users.interfaces";
 
 export const retrieveProfileUsersService = async (
   req: Request
-): Promise<any> => {
+): Promise<iReturnUserByNickname> => {
   const usersRepository: Repository<User> = AppDataSource.getRepository(User);
 
   const userFind = await usersRepository
@@ -15,7 +17,8 @@ export const retrieveProfileUsersService = async (
     .leftJoinAndSelect("user.userTechnologies", "userTechnologies")
     .leftJoinAndSelect("userTechnologies.technology", "userTechnology")
     .leftJoinAndSelect("user.project", "project")
-    .leftJoinAndSelect("project.owner", "owner")
+    .leftJoinAndSelect("project.team", "team")
+    .leftJoinAndSelect("team.user", "userTeam")
     .leftJoinAndSelect("project.projectTechnologies", "projectTechnologies")
     .leftJoinAndSelect("projectTechnologies.technology", "technology")
     .leftJoinAndSelect("user.userProjectTeam", "userProjectTeam")
@@ -24,18 +27,12 @@ export const retrieveProfileUsersService = async (
       "userProjectTeamInfosProject.owner",
       "userProjectTeamInfosProjectOwner"
     )
-    .leftJoinAndSelect(
-      "userProjectTeamInfosProject.projectTechnologies",
-      "userProjectTeamInfosProjectProjectTechnologies"
-    )
-    .leftJoinAndSelect(
-      "userProjectTeamInfosProject.team",
-      "userProjectTeamInfosProjectTeam"
-    )
     .where("user.id = :userId", {
       userId: req.userTokenInfos.id,
     })
     .getOne();
 
-  return userFind;
+  const returnNewProfileUser = returnUserProfile.parse(userFind);
+
+  return returnNewProfileUser;
 };
