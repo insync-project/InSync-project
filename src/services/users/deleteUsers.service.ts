@@ -17,6 +17,10 @@ export const deleteUsersService = async (req: Request): Promise<void> => {
       id: Number(idParams),
     });
 
+    if (!userFind) {
+      throw new AppError("User not found", 404);
+    }
+
     await userRepository.softRemove(userFind!);
   } else {
     throw new AppError("Insufficient permission", 403);

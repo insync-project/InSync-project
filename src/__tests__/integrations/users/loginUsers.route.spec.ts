@@ -3,7 +3,7 @@ import { DataSource } from "typeorm";
 import app from "../../../app";
 import { AppDataSource } from "../../../data-source";
 import { User } from "../../../entities";
-import { userLoginMock } from "../../mocks/users/loginUsers.route.spec";
+import { userLoginMock } from "../../mocks/users/loginUsers.route.mock";
 
 describe("POST /users/login", () => {
   let connection: DataSource;
