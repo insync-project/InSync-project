@@ -25,15 +25,13 @@ export const removeUserTeamsProjectsService = async (
       user: true,
     },
   });
-  console.log(findProjectTeamRepo);
+
   if (!findProjectTeamRepo) {
     throw new AppError("User not found in the project!", 404);
   }
 
   const ownerProject: number = findProjectTeamRepo.project.owner.id;
 
-  console.log(ownerProject !== Number(req.userTokenInfos.id));
-  console.log(findProjectTeamRepo.user.id !== Number(req.userTokenInfos.id));
   if (
     ownerProject !== Number(req.userTokenInfos.id) &&
     findProjectTeamRepo.user.id !== Number(req.userTokenInfos.id)

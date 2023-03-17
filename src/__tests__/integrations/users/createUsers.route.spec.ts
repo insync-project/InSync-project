@@ -69,7 +69,7 @@ describe("POST /users", () => {
 
     const expectResults = {
       status: 409,
-      bodyMessage: { message: "Invalid Email" },
+      bodyMessage: { message: "Email Already exists!" },
     };
 
     expect(response.status).toBe(expectResults.status);
@@ -86,7 +86,7 @@ describe("POST /users", () => {
 
     const expectResults = {
       status: 409,
-      bodyMessage: { message: "Invalid nickname" },
+      bodyMessage: { message: "Nickname Already exists!" },
     };
 
     expect(response.status).toBe(expectResults.status);

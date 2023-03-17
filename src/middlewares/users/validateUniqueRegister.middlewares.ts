@@ -11,7 +11,7 @@ export const validateUniqueRegisterMiddleware = async (
 ): Promise<void> => {
   const usersRepository: Repository<User> = AppDataSource.getRepository(User);
 
-  if (req.body.email && req.body.nickname) {
+  if (req.body.email || req.body.nickname) {
     const registerToValidate: User | null = await usersRepository.findOne({
       where: [{ email: req.body.email }, { nickname: req.body.nickname }],
       withDeleted: true,
@@ -19,9 +19,9 @@ export const validateUniqueRegisterMiddleware = async (
 
     if (registerToValidate) {
       if (registerToValidate.email === req.body.email) {
-        throw new AppError("Invalid Email", 409);
+        throw new AppError("Email Already exists!", 409);
       } else {
-        throw new AppError("Invalid nickname", 409);
+        throw new AppError("Nickname Already exists!", 409);
       }
     }
   }

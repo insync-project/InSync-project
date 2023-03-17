@@ -28,9 +28,3 @@ teamsRoutes.delete(
   tokenValidationMiddleware,
   removeUserTeamsProjectsControllers
 );
-
-// teamsRoutes.delete(
-//   "/:projectId/users",
-//   tokenValidationMiddleware,
-//   ownUserRemoveTeamsProjectsControllers
-// );
