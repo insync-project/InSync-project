@@ -36,6 +36,7 @@ usersRoutes.patch(
   "/:id",
   tokenValidationMiddleware,
   validateBodyMiddleware(updateUserSchema),
+  validateUniqueRegisterMiddleware,
   updateUsersController
 );
 

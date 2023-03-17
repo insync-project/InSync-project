@@ -5,6 +5,7 @@
     "typeRoots": ["src/@types", "node_modules/@types"],
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
     "strict": true,
     "exactOptionalPropertyTypes": true,
     "skipLibCheck": true,

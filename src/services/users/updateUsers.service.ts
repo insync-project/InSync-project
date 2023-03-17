@@ -15,10 +15,6 @@ export const updateUsersService = async (
     throw new AppError("User not found", 404);
   }
 
-  if (!(tokeninfos.admin === true || tokeninfos.id === idParams)) {
-    throw new AppError("Insufficient permission", 403);
-  }
-
   const userRepository: Repository<User> = AppDataSource.getRepository(User);
   const socialMediaRepository: Repository<SocialMedia> =
     AppDataSource.getRepository(SocialMedia);
@@ -31,6 +27,14 @@ export const updateUsersService = async (
       socialMedia: true,
     },
   });
+
+  if (!userFind) {
+    throw new AppError("User not found", 404);
+  }
+
+  if (!(tokeninfos.id === idParams)) {
+    throw new AppError("Insufficient permission", 403);
+  }
 
   const createSocialMedia: SocialMedia = socialMediaRepository.create({
     ...userFind?.socialMedia,
@@ -49,5 +53,5 @@ export const updateUsersService = async (
 
   await userRepository.save(createUser);
 
-  return "User updated successfully!";
+  return "User updated successfully";
 };
