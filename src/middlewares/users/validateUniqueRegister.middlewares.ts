@@ -11,7 +11,7 @@ export const validateUniqueRegisterMiddleware = async (
 ): Promise<void> => {
   const usersRepository: Repository<User> = AppDataSource.getRepository(User);
 
-  if (req.body.email && req.body.nickname) {
+  if (req.body.email || req.body.nickname) {
     const registerToValidate: User | null = await usersRepository.findOne({
       where: [{ email: req.body.email }, { nickname: req.body.nickname }],
       withDeleted: true,
