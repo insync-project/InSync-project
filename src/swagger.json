@@ -46,6 +46,9 @@
 					}
 				},
 				"responses": {
+					"400": {
+						"description": "Bad Request"
+					},
 					"409": {
 						"description": "Invalid Email or Invalid nickname"
 					},
@@ -86,6 +89,9 @@
 					}
 				},
 				"responses": {
+					"400": {
+						"description": "Bad Request"
+					},
 					"401": {
 						"description": "Invalid credentials"
 					},
@@ -113,13 +119,18 @@
 				"description": "Esta rota será responsável por fazer um soft delete de um usuário cadastrado",
 				"tags": ["Users"],
 				"security": [{ "bearerAuth": [] }],
-				"parameters": [{
-					"name": "id",
-					"in": "path",
-					"description": "Nome do ID do usuário",
-					"required": true
-				}],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"description": "Nome do ID do usuário",
+						"required": true
+					}
+				],
 				"responses": {
+					"400": {
+						"description": "Bad Request"
+					},
 					"401": {
 						"description": "Missing bearer token"
 					},
@@ -139,12 +150,14 @@
 				"description": "Esta rota será responsável por alterar dados de um usuário cadastrado",
 				"tags": ["Users"],
 				"security": [{ "bearerAuth": [] }],
-				"parameters": [{
-					"name": "id",
-					"in": "path",
-					"description": "Nome do ID do usuário",
-					"required": true
-				}],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"description": "Nome do ID do usuário",
+						"required": true
+					}
+				],
 				"requestBody": {
 					"content": {
 						"application/json": {
@@ -166,6 +179,9 @@
 					}
 				},
 				"responses": {
+					"400": {
+						"description": "Bad Request"
+					},
 					"401": {
 						"description": "Missing bearer token"
 					},
@@ -218,12 +234,14 @@
 				"summary": "Pegar dados de um usuário cadastrado pelo nickname",
 				"description": "Esta rota será responsável por pegar dados de um usuário cadastrado pelo nickname informado",
 				"tags": ["Users"],
-				"parameters": [{
-					"name": "nickname",
-					"in": "path",
-					"description": "Nickname do usuário",
-					"required": true
-				}],
+				"parameters": [
+					{
+						"name": "nickname",
+						"in": "path",
+						"description": "Nickname do usuário",
+						"required": true
+					}
+				],
 				"responses": {
 					"401": {
 						"description": "Missing bearer token"
@@ -250,12 +268,66 @@
 				"summary": "Criar um novo projeto",
 				"description": "Esta rota será responsável por criar de um novo projeto",
 				"tags": ["Projects"],
-				"security": [{ "bearerAuth": [] }]
+				"security": [{ "bearerAuth": [] }],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/Project"
+							},
+							"examples": {
+								"project_default": {
+									"value": {
+										"name": "Novo Projeto",
+										"description": "Find my Duo é uma plataforma feita para aquelas pessoas que desejam ter um duo, em sua jogatina para se divertirem",
+										"devType": "Front-end",
+										"maxUsers": 5
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"400": {
+						"description": "Bad Request"
+					},
+					"401": {
+						"description": "Missing bearer token or JWT Invalid"
+					},
+					"409": {
+						"description": "Finalize your project. Exists one project in progress"
+					},
+					"201": {
+						"description": "OK",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"$ref": "#/components/schemas/Project"
+								}
+							}
+						}
+					}
+				}
 			},
 			"get": {
 				"summary": "Pegar todos os projetos cadastrados",
 				"description": "Esta rota será responsável por pegar todos os projetos cadastrados",
-				"tags": ["Projects"]
+				"tags": ["Projects"],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"$ref": "#/components/schemas/Project"
+								}
+							}
+						}
+					}
+				}
 			}
 		},
 		"/projects/{projectId}": {
@@ -264,15 +336,17 @@
 				"description": "Esta rota será responsável por pegar apenas um projeto cadastrado pelo ID",
 				"tags": ["Projects"],
 				"security": [{ "bearerAuth": [] }],
-				"parameters": [{
-					"name": "projectId",
-					"in": "path",
-					"description": "Número do ID do projeto",
-					"required": true
-				}],
+				"parameters": [
+					{
+						"name": "projectId",
+						"in": "path",
+						"description": "Número do ID do projeto",
+						"required": true
+					}
+				],
 				"responses": {
 					"401": {
-						"description": "Missing bearer token"
+						"description": "Missing bearer token or JWT Invalid"
 					},
 					"403": {
 						"description": "Insufficient permission"
@@ -298,18 +372,26 @@
 				"description": "Esta rota será responsável por deletar de um projeto cadastrado",
 				"tags": ["Projects"],
 				"security": [{ "bearerAuth": [] }],
-				"parameters": [{
-					"name": "projectId",
-					"in": "path",
-					"description": "Número do ID do projeto",
-					"required": true
-				}],
+				"parameters": [
+					{
+						"name": "projectId",
+						"in": "path",
+						"description": "Número do ID do projeto",
+						"required": true
+					}
+				],
 				"responses": {
+					"400": {
+						"description": "Bad Request"
+					},
 					"401": {
-						"description": "Missing bearer token"
+						"description": "Missing bearer token or JWT Invalid"
 					},
 					"403": {
 						"description": "Insufficient permission"
+					},
+					"403.1": {
+						"description": "You don't have permission to delete this project"
 					},
 					"404": {
 						"description": "Project not found"
@@ -324,12 +406,14 @@
 				"description": "Esta rota será responsável por alterar dados de um projeto cadastrado",
 				"tags": ["Projects"],
 				"security": [{ "bearerAuth": [] }],
-				"parameters": [{
-					"name": "projectId",
-					"in": "path",
-					"description": "Número do ID do projeto",
-					"required": true
-				}],
+				"parameters": [
+					{
+						"name": "projectId",
+						"in": "path",
+						"description": "Número do ID do projeto",
+						"required": true
+					}
+				],
 				"requestBody": {
 					"content": {
 						"application/json": {
@@ -346,25 +430,31 @@
 							}
 						}
 					}
-				}
-			},
-			"responses": {
-				"401": {
-					"description": "Missing bearer token"
 				},
-				"403": {
-					"description": "Insufficient permission"
-				},
-				"404": {
-					"description": "User not found"
-				},
-				"200": {
-					"description": "OK",
-					"content": {
-						"application/json": {
-							"schema": {
-								"type": "object",
-								"$ref": "#/components/schemas/Project"
+				"responses": {
+					"400": {
+						"description": "Bad Request"
+					},
+					"401": {
+						"description": "Missing bearer token or JWT Invalid"
+					},
+					"403": {
+						"description": "Insufficient permission"
+					},
+					"403.1": {
+						"description": "You don't have permission to patch this project"
+					},
+					"404": {
+						"description": "User not found"
+					},
+					"200": {
+						"description": "OK",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"$ref": "#/components/schemas/Project"
+								}
 							}
 						}
 					}
@@ -372,26 +462,366 @@
 			}
 		},
 		"/technologies": {
-			"post": { "tags": ["Technologies"] },
-			"get": { "tags": ["Technologies"] }
+			"post": {
+				"summary": "Criar uma nova tecnologia",
+				"description": "Esta rota será responsável por criar de uma nova tecnologia",
+				"tags": ["Technologies"],
+				"security": [{ "bearerAuth": [] }],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/Tecnology"
+							},
+							"examples": {
+								"tech_default": {
+									"value": {
+										"name": "React Native"
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"400": {
+						"description": "Bad Request"
+					},
+					"401": {
+						"description": "Missing bearer token or JWT Invalid"
+					},
+					"409": {
+						"description": "Technology already exists"
+					},
+					"201": {
+						"description": "OK",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"$ref": "#/components/schemas/Tecnology"
+								}
+							}
+						}
+					}
+				}
+			},
+			"get": {
+				"summary": "Pegar todas as tecnologias cadastradas",
+				"description": "Esta rota será responsável por pegar todas as tecnologias cadastradas",
+				"tags": ["Technologies"],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"$ref": "#/components/schemas/Tecnology"
+								}
+							}
+						}
+					}
+				}
+			}
 		},
 		"/technologies/{techId}": {
-			"delete": { "tags": ["Technologies"] }
+			"delete": {
+				"summary": "Deletar uma tecnologia cadastrada",
+				"description": "Esta rota será responsável por deletar uma tecnologia cadastrada",
+				"tags": ["Technologies"],
+				"security": [{ "bearerAuth": [] }],
+				"parameters": [
+					{
+						"name": "techId",
+						"in": "path",
+						"description": "Número do ID da Tecnologia",
+						"required": true
+					}
+				],
+				"responses": {
+					"400": {
+						"description": "Bad Request"
+					},
+					"401": {
+						"description": "Missing bearer token or JWT Invalid"
+					},
+					"403": {
+						"description": "Insufficient permission"
+					},
+					"404": {
+						"description": "Tecnology not found"
+					},
+					"204": {
+						"description": "OK"
+					}
+				}
+			}
 		},
 		"/technologies/users": {
-			"post": { "tags": ["Technologies", "Users"] },
-			"delete": { "tags": ["Technologies", "Users"] }
+			"post": {
+				"summary": "Adicionar tecnologias do usuário logado",
+				"description": "Esta rota será responsável por adicionar tecnologias cadastradas do usuário logado",
+				"tags": ["Technologies", "Users"],
+				"security": [{ "bearerAuth": [] }],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"techs": "array"
+								}
+							},
+							"examples": {
+								"tech_default": {
+									"value": {
+										"techs": ["React", "CSS", "JavaScript"]
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"400": {
+						"description": "These technologies have already been added or not a valid technology"
+					},
+					"401": {
+						"description": "Missing bearer token or JWT Invalid"
+					},
+					"403": {
+						"description": "Insufficient permission"
+					},
+					"201": {
+						"description": "OK"
+					}
+				}
+			},
+			"delete": {
+				"summary": "Remover tecnologias do usuário logado",
+				"description": "Esta rota será responsável por remover tecnologias cadastradas do usuário logado",
+				"tags": ["Technologies", "Users"],
+				"security": [{ "bearerAuth": [] }],
+				"responses": {
+					"400": {
+						"description": "It is necessary to send at lest one technology"
+					},
+					"400.1": {
+						"description": "User does not have the technology"
+					},
+					"401": {
+						"description": "Missing bearer token or JWT Invalid"
+					},
+					"403": {
+						"description": "Insufficient permission"
+					},
+					"201": {
+						"description": "OK"
+					}
+				}
+			}
 		},
 		"/technologies/projects/{projectId}": {
-			"post": { "tags": ["Technologies", "Projects"] },
-			"delete": { "tags": ["Technologies", "Projects"] }
+			"post": {
+				"summary": "Adicionar tecnologias a um projeto cadastrado",
+				"description": "Esta rota será responsável por adicionar uma tecnologia cadastrada a um projeto cadastrado",
+				"tags": ["Technologies", "Projects"],
+				"security": [{ "bearerAuth": [] }],
+				"parameters": [
+					{
+						"name": "projectId",
+						"in": "path",
+						"description": "Número do ID do projeto",
+						"required": true
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"techs": "array"
+								}
+							},
+							"examples": {
+								"tech_default": {
+									"value": {
+										"techs": ["React", "CSS", "JavaScript"]
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"400": {
+						"description": "These technologies have already been added or not a valid technology"
+					},
+					"401": {
+						"description": "Missing bearer token or JWT Invalid"
+					},
+					"403": {
+						"description": "Insufficient permission"
+					},
+					"404": {
+						"description": "Project not found"
+					},
+					"201": {
+						"description": "OK"
+					}
+				}
+			},
+			"delete": {
+				"summary": "Remover tecnologias de um projeto cadastrado",
+				"description": "Esta rota será responsável por remover uma tecnologia cadastrada a um projeto cadastrado",
+				"tags": ["Technologies", "Projects"],
+				"security": [{ "bearerAuth": [] }],
+				"parameters": [
+					{
+						"name": "projectId",
+						"in": "path",
+						"description": "Número do ID do projeto",
+						"required": true
+					}
+				],
+				"responses": {
+					"400": {
+						"description": "It is necessary to send at lest one technology"
+					},
+					"400.1": {
+						"description": "Project does not have the technology"
+					},
+					"401": {
+						"description": "Missing bearer token or JWT Invalid"
+					},
+					"403": {
+						"description": "Insufficient permission"
+					},
+					"404": {
+						"description": "Project not found"
+					},
+					"201": {
+						"description": "OK"
+					}
+				}
+			}
 		},
 		"/teams/projects/{projectId}": {
-			"post": { "tags": ["Teams"] }
+			"post": {
+				"summary": "Solicitar permissão para entrar em um projeto cadastrado",
+				"description": "Esta rota será responsável por solicitar permissão de um usuário logado para um projeto cadastrado",
+				"tags": ["Teams"],
+				"security": [{ "bearerAuth": [] }],
+				"parameters": [
+					{
+						"name": "projectId",
+						"in": "path",
+						"description": "Número do ID do projeto",
+						"required": true
+					}
+				],
+				"responses": {
+					"401": {
+						"description": "Missing bearer token or JWT Invalid"
+					},
+					"404": {
+						"description": "Project not found"
+					},
+					"409": {
+						"description": "User owns the project!"
+					},
+					"409.1": {
+						"description": "User already belongs to this project!"
+					},
+					"201": {
+						"description": "OK"
+					}
+				}
+			}
 		},
 		"/teams/{projectId}/users/{userId}": {
-			"put": { "tags": ["Teams"] },
-			"delete": { "tags": ["Teams"] }
+			"put": {
+				"summary": "Autorizar usuário na lista de espera em um projeto cadastrado",
+				"description": "Esta rota será responsável por autorizar um usuário em lista de espera para um projeto cadastrado",
+				"tags": ["Teams"],
+				"security": [{ "bearerAuth": [] }],
+				"parameters": [
+					{
+						"name": "projectId",
+						"in": "path",
+						"description": "Número do ID do projeto",
+						"required": true
+					},
+					{
+						"name": "userId",
+						"in": "path",
+						"description": "Número do ID do usuário em lista de espera",
+						"required": true
+					}
+				],
+				"responses": {
+					"401": {
+						"description": "Missing bearer token or JWT Invalid"
+					},
+					"403":{
+						"description": "Insufficient permission"
+					},
+					"404": {
+						"description": "Project not found"
+					},
+					"404.1": {
+						"description": "User not found in the waiting list!"
+					},
+					"409": {
+						"description": "You already participate in this project!"
+					},
+					"409.1":{
+						"description": "This project has exceeded the maximum members"
+					},
+					"201": {
+						"description": "OK"
+					}
+				}
+			},
+			"delete": {
+				"summary": "Remover solicitação de usuário na lista de espera ou do time de um projeto cadastrado",
+				"description": "Esta rota será responsável por remover um usuário em lista de espera ou do time de um projeto cadastrado",
+				"tags": ["Teams"],
+				"security": [{ "bearerAuth": [] }],
+				"parameters": [
+					{
+						"name": "projectId",
+						"in": "path",
+						"description": "Número do ID do projeto",
+						"required": true
+					},
+					{
+						"name": "userId",
+						"in": "path",
+						"description": "Número do ID do usuário em lista de espera ou no time do projeto",
+						"required": true
+					}
+				],
+				"responses": {
+					"401": {
+						"description": "Missing bearer token or JWT Invalid"
+					},
+					"403":{
+						"description": "Insufficient permission"
+					},
+					"404": {
+						"description": "Project not found"
+					},
+					"404.1": {
+						"description": "User not found in the waiting list!"
+					},
+					"201": {
+						"description": "OK"
+					}
+				}
+			}
 		}
 	},
 	"components": {
