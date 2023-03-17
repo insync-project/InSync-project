@@ -19,9 +19,9 @@ export const validateUniqueRegisterMiddleware = async (
 
     if (registerToValidate) {
       if (registerToValidate.email === req.body.email) {
-        throw new AppError("Invalid Email", 409);
+        throw new AppError("Email Already exists!", 409);
       } else {
-        throw new AppError("Invalid nickname", 409);
+        throw new AppError("Nickname Already exists!", 409);
       }
     }
   }
