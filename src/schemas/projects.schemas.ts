@@ -8,22 +8,34 @@ export const projectsSchemas = z.object({
   id: z.number().positive().int(),
   name: z.string().trim().max(50),
   description: z.string().trim().max(500),
-  devType: z.union([
-    z.literal(devTypeProjectRole.FRONT),
-    z.literal(devTypeProjectRole.BACK),
-    z.literal(devTypeProjectRole.FULL),
+  devType: z.enum([
+    devTypeProjectRole.FRONT,
+    devTypeProjectRole.BACK,
+    devTypeProjectRole.FULL,
   ]),
-  status: z.union([
-    z.literal(statusProjectRole.OPEN),
-    z.literal(statusProjectRole.CLOSED),
-    z.literal(statusProjectRole.INPROCESS),
-  ]),
+  status: z
+    .enum([
+      statusProjectRole.OPEN,
+      statusProjectRole.CLOSED,
+      statusProjectRole.INPROCESS,
+    ])
+    .default(statusProjectRole.OPEN),
   cover: z.string().max(150).nullable().optional(),
   maxUsers: z.number().int().positive().min(1).max(10),
   createdAt: z.string(),
   updatedAt: z.string(),
   deletedAt: z.string().nullable(),
 });
+
+export const createUserSchema = z
+  .object({
+    name: z.string().max(50),
+    email: z.string().email().max(50),
+    password: z.string().max(120),
+    nickname: z.string().max(30),
+    admin: z.boolean(),
+  })
+  .partial();
 
 const returnCreateUser = z.object({
   id: z.number(),
@@ -88,10 +100,10 @@ export const projectsCreateReturnSchemaArray =
 
 export const projectsUpdateSchema = projectsCreateSchema
   .extend({
-    status: z.union([
-      z.literal(statusProjectRole.OPEN),
-      z.literal(statusProjectRole.CLOSED),
-      z.literal(statusProjectRole.INPROCESS),
+    status: z.enum([
+      statusProjectRole.OPEN,
+      statusProjectRole.CLOSED,
+      statusProjectRole.INPROCESS,
     ]),
   })
   .partial();

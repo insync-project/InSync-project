@@ -1,5 +1,6 @@
 import { z } from "zod";
 import {
+  createUserSchemaOptional,
   projectReturnNewTeam,
   projectsCreateReturnSchema,
   projectsCreateReturnSchemaArray,
@@ -33,3 +34,5 @@ export type iReturnTeamProjectsWaiting = z.infer<
 >;
 
 export type iProjectReturnNewTeam = z.infer<typeof projectReturnNewTeam>;
+
+export type iCreatUserOptional = z.infer<typeof createUserSchemaOptional>;
