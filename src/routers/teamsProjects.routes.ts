@@ -3,7 +3,6 @@ import { tokenValidationMiddleware } from "../middlewares/global/validateToken.m
 import {
   addTeamsProjectsControllers,
   allowUserTeamsProjectsControllers,
-  ownUserRemoveTeamsProjectsControllers,
   removeUserTeamsProjectsControllers,
 } from "../controllers/teamsProjects.controllers";
 import { validateProjectMiddleware } from "../middlewares/projects/validProject.middleware";
