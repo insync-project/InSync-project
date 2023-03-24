@@ -3,7 +3,6 @@ import {
   ICreateUser,
   ILoginBody,
   IRegisterReturn,
-  IReturnUser,
   IUpdateUser,
 } from "../interfaces/users.interfaces";
 import { createUsersService } from "../services/users/createUsers.service";

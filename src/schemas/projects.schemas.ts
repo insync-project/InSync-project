@@ -27,7 +27,7 @@ export const projectsSchemas = z.object({
   deletedAt: z.string().nullable(),
 });
 
-export const createUserSchema = z
+export const createUserSchemaOptional = z
   .object({
     name: z.string().max(50),
     email: z.string().email().max(50),

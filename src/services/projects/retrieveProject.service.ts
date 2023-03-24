@@ -17,8 +17,6 @@ export const retrieveProjectService = async (
 ): Promise<iProjectReturnNewTeam> => {
   const projectsRepo = AppDataSource.getRepository(Project);
 
-  console.log(req.params.projectId);
-
   const projectsResult = await projectsRepo
     .createQueryBuilder("projects")
     .leftJoinAndSelect("projects.owner", "owner")

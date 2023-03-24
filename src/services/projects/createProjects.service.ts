@@ -20,10 +20,6 @@ export const createProjectsService = async (
     .andWhere("projects.status != :status", { status: "Finalizado" })
     .getOne();
 
-  // const teste = await projectRepo.find();
-
-  // console.log(teste);
-
   if (
     projectQuery?.status === "Aberto" ||
     projectQuery?.status === "Em andamento"
