@@ -7,10 +7,12 @@ import { usersRoutes } from "./routers/users.routes";
 import { technologiesRoutes } from "./routers/technologies.routes";
 import { projectsRoutes } from "./routers/projects.routes";
 import { teamsRoutes } from "./routers/teamsProjects.routes";
+import cors from "cors";
 
 const app: Application = express();
 
 app.use(express.json());
+app.use(cors());
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
