@@ -1,5 +1,6 @@
 import "express-async-errors";
 import express, { Application, request, response } from "express";
+import cors from "cors"
 import swaggerUi from "swagger-ui-express";
 import swaggerDocs from "./swagger.json"
 import { errorHandler } from "./errors";
@@ -11,6 +12,8 @@ import { teamsRoutes } from "./routers/teamsProjects.routes";
 const app: Application = express();
 
 app.use(express.json());
+
+app.use(cors())
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs))
 
